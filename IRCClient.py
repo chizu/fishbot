@@ -1,8 +1,10 @@
 #!/bin/python
 # IRC client class.                                           vim:et:ts=4
 # Adam Sampson <azz@gnu.org>
+# Trevor Hardcastle <chizu@spicious.com>
 
-import sys, socket
+import sys, socket, time
+from thread import start_new_thread
 
 def getnick(s):
     n = s.find("!")
@@ -28,10 +30,17 @@ class IRCClient:
         """Open a connection to an IRC server."""
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.server = server
+        self.port = port
         self.socket.connect((self.server, port))
         self.fd = self.socket.makefile("r")
         self.open = 1
-        self.my_nick = None
+        self.my_nick = ""
+
+    def __reinit__(self):
+        self.socket.close()
+        del(self.socket)
+        del(self.fd)
+        self.__init__(self.server, self.port)
 
     def __del__(self):
         """Close the connection."""
@@ -54,6 +63,7 @@ class IRCClient:
 
     def connect(self, nick, realname = "IRCClient", password = None):
         """Log in to the server."""
+        self.realname = realname
         if password: self.send("PASS :" + password)
         self.nick(nick)
         self.send("USER " + nick + " 0 * :" + realname)
@@ -95,62 +105,75 @@ class IRCClient:
         
     def say(self, to, text):
         """Send a message to a user or channel."""
-        self.send("PRIVMSG " + to + " :" + text)
+        if text:
+            text = text.split('\n')
+	    for each in text:
+	        self.send("PRIVMSG " + to + " :" + each)
+
+    def action(self, to, text):
+        if text:
+            self.say(to, "\01ACTION " + text + "\01")
 
     def notice(self, to, text):
-        self.send("NOTICE " + to + " :" + text)
+        if text:
+            self.send("NOTICE " + to + " :" + text)
 
     def mainloop(self):
-        while 1:
-            line = self.recv()
-            if not line: break
+        try:
+            while 1:
+                line = self.recv()
+                if not line: break
 
-            prefix = None
-            if line[0] == ":": (prefix, line) = line[1:].split(" ", 1)
-            (command, params) = line.split(" ", 1)
+                prefix = None
+                if line[0] == ":": (prefix, line) = line[1:].split(" ", 1)
+                (command, params) = line.split(" ", 1)
            
-            if command[0] >= '0' and command[0] <= '9':
-                # Server reply
-                code = int(command)
-                self.handle_reply(prefix, code, params)
-            elif command == "PING":
-                self.send("PONG " + params)
-            elif command == "NICK":
-                l = ircsplit(params, 0)
-                self.handle_nick(prefix, l[0])
-            elif command == "MODE":
-                self.handle_mode(prefix, params)
-            elif command == "QUIT":
-                l = ircsplit(params, 0)
-                self.handle_quit(prefix, l[0])
-            elif command == "JOIN":
-                l = ircsplit(params, 0)
-                self.handle_join(prefix, l[0])
-            elif command == "PART":
-                l = ircsplit(params, 1)
-                self.handle_part(prefix, l[0], l[1])
-            elif command == "TOPIC":
-                l = ircsplit(params, 1) 
-                self.handle_topic(prefix, l[0], l[1])
-            elif command == "INVITE":
-                l = ircsplit(params, 1)
-                self.handle_invite(prefix, l[0], l[1])
-            elif command == "KICK":
-                l = ircsplit(params, 2)
-                self.handle_kick(prefix, l[0], l[1], l[2])
-            elif command == "PRIVMSG":
-                l = ircsplit(params, 1)
-                self.handle_say(prefix, l[0], l[1])
-            elif command == "NOTICE":
-                l = ircsplit(params, 1)
-                self.handle_notice(prefix, l[0], l[1])
-            else:
-                self.handle_command(prefix, command, params)
-                
+                if command[0] >= '0' and command[0] <= '9':
+                    # Server reply
+                    code = int(command)
+                    self.handle_reply(prefix, code, params)
+                elif command == "PING":
+                    self.send("PONG " + params)
+                elif command == "NICK":
+                    l = ircsplit(params, 0)
+                    self.handle_nick(prefix, l[0])
+                elif command == "MODE":
+                    self.handle_mode(prefix, params)
+                elif command == "QUIT":
+                    l = ircsplit(params, 0)
+                    self.handle_quit(prefix, l[0])
+                elif command == "JOIN":
+                    l = ircsplit(params, 0)
+                    self.handle_join(prefix, l[0])
+                elif command == "PART":
+                    l = ircsplit(params, 1)
+                    self.handle_part(prefix, l[0], l[1])
+                elif command == "TOPIC":
+                    l = ircsplit(params, 1) 
+                    self.handle_topic(prefix, l[0], l[1])
+                elif command == "INVITE":
+                    l = ircsplit(params, 1)
+                    self.handle_invite(prefix, l[0], l[1])
+                elif command == "KICK":
+                    l = ircsplit(params, 2)
+                    self.handle_kick(prefix, l[0], l[1], l[2])
+                elif command == "PRIVMSG":
+                    l = ircsplit(params, 1)
+                    start_new_thread(self.handle_say,(prefix, l[0], l[1]))
+                elif command == "NOTICE":
+                    l = ircsplit(params, 1)
+                    self.handle_notice(prefix, l[0], l[1])
+                elif command == "ERROR":
+                    time.sleep(5)
+                    self.__reinit__()
+                    self.connect(self.my_nick, self.realname)
+                else:
+                    self.handle_command(prefix, command, params)
+        except SystemExit:
+            return
+
     def getnick(self, s):
         return split(s, "!", 1)[0]
-
-    def get_nick(self): return self.my_nick
 
     def handle_incoming(self, line): pass
     def handle_outgoing(self, line): pass
@@ -174,4 +197,5 @@ class LogAllMixin:
 
     def handle_outgoing(self, line):
         print >>sys.stderr, "> " + line
+
 

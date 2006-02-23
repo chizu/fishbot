@@ -1,30 +1,29 @@
 #!/usr/bin/python
-"""Fishbot - The least thought out IRC bot ever.
+"""Fishbot 2 - More awesome than Fishbot 1.
 
-Fishbot is distributed under the GNU General Public License Version 2.0"""
-import re, os, urllib, sys, xml.dom.minidom, string, time
-import urlmatch
+Fishbot is distributed under the GNU General Public License Version 2.0
+
+Fishbot 2.0 brings dynamic modules, generally cleaner code, more random experiments, and a faster, more stable bot."""
 from IRCClient import *
+from bang import BangCommand
+from string import join
+import traceback, re, urllib, sys, xml.dom.minidom, time, os, urlmatch
 
-def getText(nodelist):
-    rc = ""
-    for node in nodelist:
-        if node.nodeType == node.TEXT_NODE:
-            rc = rc + node.data
-    return rc
-
-class Y66(LogAllMixin, IRCClient):
-    def __init__(self, server = "irc.sandbenders.org", port = 6667, nick = "Fishbot", channels = ["#chshackers","#sandbenders","#botfucking"]):
+class Fishbot(LogAllMixin, IRCClient):
+    """An IRC bot that listens for commands and performs various functions on the channel."""
+    def __init__(self, server = "irc.sandbenders.org", port = 6667, nick = "Fishbot", channels = ["#chshackers","#sandbenders"]):
         self.channels = channels
         IRCClient.__init__(self, server, port)
-        self.connect(nick, "Fishbot")
-        self.re = urlmatch.regex
-	self.moo = re.compile("cows.*go.*moo|moo.*go.*cows|go.*cows.*moo|go.*moo.*cows|oom.*og.*swoc", re.I)
+        self.connect(nick, "Fishbot")	 
 	self.last = {}
+	self.bang_commands = BangCommand()
 
-    def reconnect(self):
-	time.sleep(5);
-	self.__init__();
+    def getText(self, nodelist):
+	rc = ""
+	for node in nodelist:
+	    if node.nodeType == node.TEXT_NODE:
+		rc = rc + node.data
+	return rc
 
     def handle_reply(self, prefix, code, params):
 	if code == 1:
@@ -32,109 +31,85 @@ class Y66(LogAllMixin, IRCClient):
 	    for channel in self.channels:
 		self.join(channel)
 
-
-    def handle_command(self, prefix, command, params):
-	if command == "ERROR":
-	    self.reconnect()
-        
     def handle_quit(self, nick, reason):
-	# Fishbot had quit, restart it.
+	"""Fishbot has quit, restart it."""
 	if nick == self.nick:
-	    self.reconnect();
+	    self.__reinit__()
+	    self.connect(self.my_nick, self.realname)
 
-    def handle_say(self, source, to, message):
+    def respond_to(self, source, to):
+	"""Reply to the correct place based on the source and destination"""
 	# Target to reply to
-	try:
+	if to in self.channels:
 	    # If the request was from a channel, reply to the channel.
-	    self.channels.index(to)
 	    respond = to
-	except:
+	else:
 	    # If the request was from a private message, 
 	    # reply to the private message.
 	    respond = getnick(source)
-	    
-	if getnick(source) == "Y55":
-	    return
+	return respond
 
-	# Simple commands.
-	if (message == "!fortune"):
-	    for each in os.popen('fortune').readlines():
-		self.say(respond, each)
-	elif (message == "!sex"):
-	    for each in os.popen('sex').readlines():
-		self.say(respond, each)
-	elif (re.search("\!help.*",message)):
-	    self.say(respond, "!wiki coming soon. Try !google, !sex, !fortune, and url information today.")
-	elif (re.search("\!s/.*/.*/",message)):
+    def handle_say(self, source, to, message):
+	respond = self.respond_to(source, to)
+
+	# Try to leave infinite loops of messages (from other bots typically)
+	if (self.last.has_key(getnick(source))):
+	    if (self.last[getnick(source)][0] == message and self.last[getnick(source)][1] + 3 > time.time()):
+		return
+	else:
+	    self.last[getnick(source)] = (message, time.time())
+
+	# Match !<stuff> commands.
+	match = re.search('^\!(\w+).*$', message)
+	if match:
+	    command = match.group(1)
+	    if not os.path.exists("bang/%s.py" % command):
+		if self.bang_commands.has_key(command):
+		    self.bang_commands - command
+		return
 	    try:
-		pattern = message.split('/')[1]
-		repl = message.split('/')[2]
-		self.say(respond, "%s meant to say: %s" % (getnick(source), re.sub(pattern, repl, self.last[getnick(source)])))
+		self.bang_commands[command]
+		if os.stat("bang/%s.py" % command).st_mtime > os.stat("bang/%s.pyc" % command).st_mtime:
+		    self.bang_commands[command] = reload(self.bang_commands[command])
+		self.bang_commands[command].handle_say(self, source, to, message)
+	    except KeyError:
+		self.bang_commands + command
+		self.bang_commands[command].handle_say(self, source, to, message)
+	    except SystemExit:
+		sys.exit()
 	    except:
-		self.say(respond, "Invalid regular expression.")
-	elif (re.search("\!upper .*", message)):
-	    pass
-	elif (message == "!list"):
-	    # yay for a list
-	    self.say(respond, "eggs")
-	    self.say(respond, "beans")
-	    self.say(respond, "five")
-	    self.say(respond, "dentifrice")
-	    self.say(respond, "macho nachos")
-	    self.say(respond, "jam")
-	elif (re.compile("^!wtf (.*)").search(message)):
-	    # was insecure, now it's probably secure.
-	    wtf = re.compile("^!wtf (.*)").search(message)
-	    for each in os.popen('wtf ' + re.escape(wtf.group(1))).readlines():
-		self.say(respond, (each or ("Gee... I don't know what " + wtf.group(1) + "means...")))
-	elif (re.compile("^!google (.*)").search(message)):
-	    # probably shouldn't be considered a simple command.
-	    # maybe break this off into another function
-	    google = re.compile("^!google (.*)").search(message)
-	    # generate search URL
-	    search_page = urllib.urlopen("http://www.google.com/search?hl=en&q="+ re.sub(" ", "+", google.group(1)) +"&btnG=Google+Search")
-	    search_page = search_page.readlines()
-	    for each in search_page:
-		# wade through googles mass of html to pull out the first title
-		# and url.
-		if re.compile("<\!--m-->(.*?)<\/a>", re.M).search(each):
-		    try:
-			self.say(respond, "Google - '" + google.group(1) + "'| " + re.sub("<.*?>","",re.compile("<\!--m-->(.*?)<\/a>", re.M).search(each).group(1)) + " [ " + re.search("<\!--m-->.*?<a href=\"(.*?)\">", each, re.M).group(1) + " ]")
-			return
-		    except:
-			self.say(respond, "Look it up yourself, Google sucks.")
-			return
-        p = self.moo.search(message)
+		self.say(respond, "Module %s failed to load: %s" % (command, traceback.format_exc()))
 
 	# This is sadly the original purpose of Fishbot. 
 	# !google "not a real cowfish" for what little reasoning there is.
-	if p:
+	if re.search("(?=(.*cows.*))(?=(.*go.*))(?=(.*moo.*))", message):
 	    self.say(respond, "LIEZ FISH GO MOO!")
 
+	# Keep track of the last message from each user
+	self.last[getnick(source)] = (message, time.time())
+
 	# The magic of URL parsing. 
-	# I need to kill the number of try, except pairs I I used.
-        m = self.re.search(message)
+	# I need to kill the number of try, except pairs I used.
+        m = urlmatch.regex.search(message)
 	if m:
 	    try:
 		resource = urllib.urlopen(m.group())
 	    except:
 		return
-	    try:
-		["application/xhtml+xml","text/html"].index(resource.info().getheader('Content-Type').split(';')[0])
-	    except:
-		try:
-		    ["application/x-bittorrent"].index(resource.info().getheader('Content-Type').split(';')[0])
+	    if not (resource.info().getheader('Content-Type').split(';')[0] in ["application/xhtml+xml", "text/html"]):
+		if resource.info().getheader('Content-Type').split(';')[0] in ["application/x-bittorrent"]:
 		    torrent = resource.readlines()
 		    result = re.search("name[0-9]*?:(.*?)12:",torrent[0])
-		    self.say(respond, "Torrent Name: " + result.group(1))
-		except:
+		    if hasattr(result, "group"):
+			self.say(respond, "Torrent Name: " + result.group(1))
+		else:
 		    self.say(respond, "Content Type: " + (resource.info().getheader('Content-Type') or "b0rked webserver"))
 		resource.close()
 		return
 	    try:
 		xhtml = resource.readlines()
-		dom = xml.dom.minidom.parseString(string.join(xhtml))
-		self.say(respond, "XHTML, Title: " + getText(dom.getElementsByTagName("title")[0].childNodes))
+		dom = xml.dom.minidom.parseString(join(xhtml))
+		self.say(respond, "XHTML, Title: " + self.getText(dom.getElementsByTagName("title")[0].childNodes))
 	    except:
 		for each in xhtml:
 		    if re.compile("\<title.*\>(.*)\<\/title\>",re.I).search(each):
@@ -142,10 +117,7 @@ class Y66(LogAllMixin, IRCClient):
 			self.say(respond, "Malformed XML, Title: " + match.group(1))
 	    resource.close()
 	    return
-	self.last[getnick(source)] = message
 
 if __name__ == "__main__":
-    # Spoof Firefox for the purposes of googling.
-    urllib.URLopener.version = """Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.7.8) Gecko/20050609 Firefox/1.0.4"""
-    bot = Y66()
+    bot = Fishbot(server = "irc.sandbenders.org", port = 6667, nick = "Fishbot", channels = ["#chshackers","#sandbenders"])
     bot.mainloop()

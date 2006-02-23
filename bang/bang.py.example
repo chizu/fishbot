@@ -1,0 +1,6 @@
+#!/usr/bin/python
+"""Example Fishbot extension."""
+def handle_say(self, source, to, message):
+    # self here is going to be the main Fishbot object
+    respond = self.respond_to(source, to)
+    self.say(respond, "This is an example.")
