@@ -10,8 +10,9 @@ import irclib
 import ircbot
 
 # Fishbot specific
-import bang
+import matches
 import backend
+import bang
 
 # Python builtins
 import thread, time, re, os, traceback
@@ -33,23 +34,27 @@ class Fishbot(ircbot.SingleServerIRCBot):
 	    self.connection.join(channel)
 
     def on_privmsg(self, c, event):
-	#to = irclib.nm_to_n(event.source())
-	self.bang_execute(event)
+        self.on_msg(c, event)
 
     def on_pubmsg(self, c, event):
+        self.on_msg(c, event)
 	to = event.target()
 	source = event.source()
 
 	# Try to leave infinite loops of messages (from other bots typically)
+        """
 	if (self.last(source)):
 	    if (self.last(source).message == event.arguments()[0] and self.last[source].message_time + 3 > time.time()):
 		return
 	else:
 	    self.last(source).message_time = time.time()
 	    self.last(source).message = event.arguments()[0]
-		
-	self.bang_execute(event)
+        """
 	#thread.start_new_thread(self.msg,(to, event.arguments()[0]))
+
+    def on_msg(self, c, event):
+        
+	self.bang_execute(event)
 
     def say(self, to, message):
 	"""Multiple line wrapper for irclib.connection.privmsg"""
