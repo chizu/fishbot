@@ -10,7 +10,7 @@ import irclib
 import ircbot
 
 # Fishbot specific
-import matches
+import plugins
 import backend
 import importer
 
