@@ -21,15 +21,14 @@ import thread, time, re, os, traceback
 class Fishbot(ircbot.SingleServerIRCBot):
     """An IRC bot that listens for commands and performs various functions on the channel."""
     def __init__(self, server = "irc.sandbenders.org", port = 6667, nick = "Fishbot", channels = ["#chshackers"]):
-	irclib.DEBUG = 1
+	irclib.DEBUG = 1 # Debugging output on the console
         self.join = channels
+        self.version = "Fishbot 3.0 Alpha"
 	ircbot.SingleServerIRCBot.__init__(self, [(server, port)], nick, nick)
-        for each in matches.expressions:
-            matches.expressions[re.compile(each)] = matches.expressions[each]
-            del(matches.expressions[each])
-	#self.bang_commands = bang.BangCommand()
-        #self.plugins = {'bang':__import__('bang')}
-        #self.bang_commands.keys = self.plugins['bang'].keys
+        # Compile all the plugins
+        for each in plugins.expressions:
+            plugins.expressions[re.compile(each)] = plugins.expressions[each]
+            del(plugins.expressions[each])
 
     def on_nicknameinuse(self, c, event):
 	self.connection.nick(self.connection.get_nickname() + "_")
@@ -58,10 +57,11 @@ class Fishbot(ircbot.SingleServerIRCBot):
 	#thread.start_new_thread(self.msg,(to, event.arguments()[0]))
 
     def on_msg(self, c, event):
-        for each in matches.expressions:
+        for each in plugins.expressions:
             match = each.search(event.arguments()[0])
             if match:
-                getattr(self,matches.expressions[each])(event)
+                print plugins.expressions[each]
+                plugins.expressions[each](self,event)
 
     def say(self, to, message):
 	"""Multiple line wrapper for irclib.connection.privmsg"""
