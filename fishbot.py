@@ -12,7 +12,7 @@ import ircbot
 # Fishbot specific
 import matches
 import backend
-import bang
+import importer
 
 # Python builtins
 import thread, time, re, os, traceback
@@ -24,7 +24,9 @@ class Fishbot(ircbot.SingleServerIRCBot):
 	irclib.DEBUG = 1
         self.join = channels
 	ircbot.SingleServerIRCBot.__init__(self, [(server, port)], nick, nick)
-	self.bang_commands = bang.BangCommand()
+	#self.bang_commands = bang.BangCommand()
+        self.plugins = {'bang':__import__('bang')}
+        self.bang_commands.keys = self.plugins['bang'].keys
 
     def on_nicknameinuse(self, c, event):
 	self.connection.nick(self.connection.get_nickname() + "_")
@@ -52,9 +54,8 @@ class Fishbot(ircbot.SingleServerIRCBot):
         """
 	#thread.start_new_thread(self.msg,(to, event.arguments()[0]))
 
-    def on_msg(self, c, event):
-        
-	self.bang_execute(event)
+    def on_msg(self, c, event):        
+	self.bang(event)
 
     def say(self, to, message):
 	"""Multiple line wrapper for irclib.connection.privmsg"""
@@ -73,6 +74,14 @@ class Fishbot(ircbot.SingleServerIRCBot):
 	    # reply to the private message.
 	    respond = irclib.nm_to_n(source)
 	return respond
+
+    def bang(self, event):
+        match = re.search('^\!(\w+).*$', event.arguments()[0])
+        if match:
+            module = importer.__import__(match.group(1), globals(), locals(), 'bang')
+            print module
+            if module:
+                module.handle_say(self, event.source(), event.target(), event.arguments()[0])
 
     def bang_execute(self, event):
 	"""Load an execute modules from the bang package directory."""
