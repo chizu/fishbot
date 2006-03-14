@@ -24,6 +24,9 @@ class Fishbot(ircbot.SingleServerIRCBot):
 	irclib.DEBUG = 1
         self.join = channels
 	ircbot.SingleServerIRCBot.__init__(self, [(server, port)], nick, nick)
+        for each in matches.expressions:
+            matches.expressions[re.compile(each)] = matches.expressions[each]
+            del(matches.expressions[each])
 	#self.bang_commands = bang.BangCommand()
         #self.plugins = {'bang':__import__('bang')}
         #self.bang_commands.keys = self.plugins['bang'].keys
@@ -54,8 +57,11 @@ class Fishbot(ircbot.SingleServerIRCBot):
         """
 	#thread.start_new_thread(self.msg,(to, event.arguments()[0]))
 
-    def on_msg(self, c, event):        
-	self.bang(event)
+    def on_msg(self, c, event):
+        for each in matches.expressions:
+            match = each.search(event.arguments()[0])
+            if match:
+                getattr(self,matches.expressions[each])(event)
 
     def say(self, to, message):
 	"""Multiple line wrapper for irclib.connection.privmsg"""
@@ -78,10 +84,14 @@ class Fishbot(ircbot.SingleServerIRCBot):
     def bang(self, event):
         match = re.search('^\!(\w+).*$', event.arguments()[0])
         if match:
-            module = importer.__import__(match.group(1), globals(), locals(), 'bang')
-            print module
-            if module:
-                module.handle_say(self, event.source(), event.target(), event.arguments()[0])
+            try:
+                module = importer.__import__(match.group(1), globals(), locals(), 'bang')
+                if module:
+                    module.handle_say(self, event.source(), event.target(), event.arguments()[0])
+            except ImportError:
+                return
+            except:
+                raise
 
     def bang_execute(self, event):
 	"""Load an execute modules from the bang package directory."""
