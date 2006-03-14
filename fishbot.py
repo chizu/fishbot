@@ -25,8 +25,8 @@ class Fishbot(ircbot.SingleServerIRCBot):
         self.join = channels
 	ircbot.SingleServerIRCBot.__init__(self, [(server, port)], nick, nick)
 	#self.bang_commands = bang.BangCommand()
-        self.plugins = {'bang':__import__('bang')}
-        self.bang_commands.keys = self.plugins['bang'].keys
+        #self.plugins = {'bang':__import__('bang')}
+        #self.bang_commands.keys = self.plugins['bang'].keys
 
     def on_nicknameinuse(self, c, event):
 	self.connection.nick(self.connection.get_nickname() + "_")
