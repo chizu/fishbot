@@ -57,6 +57,7 @@ class Fishbot(ircbot.SingleServerIRCBot):
 	#thread.start_new_thread(self.msg,(to, event.arguments()[0]))
 
     def on_msg(self, c, event):
+        plugins = importer.__import__("plugins")
         for each in plugins.expressions:
             match = each.search(event.arguments()[0])
             if match:
@@ -80,43 +81,6 @@ class Fishbot(ircbot.SingleServerIRCBot):
 	    # reply to the private message.
 	    respond = irclib.nm_to_n(source)
 	return respond
-
-    def bang(self, event):
-        match = re.search('^\!(\w+).*$', event.arguments()[0])
-        if match:
-            try:
-                module = importer.__import__(match.group(1), globals(), locals(), 'bang')
-                if module:
-                    module.handle_say(self, event.source(), event.target(), event.arguments()[0])
-            except ImportError:
-                return
-            except:
-                raise
-
-    def bang_execute(self, event):
-	"""Load an execute modules from the bang package directory."""
-	match = re.search('^\!(\w+).*$', event.arguments()[0])
-	if match:
-	    command = match.group(1)
-	    # Make sure the file exists, if not delete the module.
-	    # If it does, load or update the module
-	    if not os.path.exists(self.bang_commands.path + "/%s.py" % command):
-		if self.bang_commands.has_key(command):
-		    self.bang_commands - command
-		return
-	    try:
-		self.bang_commands[command]
-		if os.stat("bang/%s.py" % command).st_mtime > os.stat("bang/%s.pyc" % command).st_mtime:
-		    self.bang_commands[command] = reload(self.bang_commands[command])
-		self.bang_commands[command].handle_say(self, event.source(), event.target(), event.arguments()[0])
-	    except KeyError:
-		self.bang_commands + command
-		self.bang_commands[command].handle_say(self, event.source(), event.target(), event.arguments()[0])
-	    except SystemExit:
-		sys.exit()
-	    except:
-		self.say(irclib.nm_to_n(event.source()), "Module %s failed to load: %s" % (command, traceback.format_exc()))
-
     
 def main():
     bot = Fishbot(channels = ["#botfucking"])
