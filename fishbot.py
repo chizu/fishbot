@@ -26,9 +26,9 @@ class Fishbot(ircbot.SingleServerIRCBot):
         self.version = "Fishbot 3.0 Alpha"
 	ircbot.SingleServerIRCBot.__init__(self, [(server, port)], nick, nick)
         # Compile all the plugins
-        for each in plugins.expressions:
-            plugins.expressions[re.compile(each)] = plugins.expressions[each]
-            del(plugins.expressions[each])
+        #for each in plugins.expressions:
+        #    plugins.expressions[re.compile(each)] = plugins.expressions[each]
+        #    del(plugins.expressions[each])
 
     def on_nicknameinuse(self, c, event):
 	self.connection.nick(self.connection.get_nickname() + "_")

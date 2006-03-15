@@ -1,19 +1,25 @@
 #!/usr/bin/python
 import sys
 from glob import glob
-__all__ = [each.split('/')[1].split('.')[0] \
-	   for each in glob('bang/*.py')]
+submodules = glob("plugins/bang/*")
+__all__ = set()
+for each in submodules:
+    each = each.split('/')[-1].split('.')[0]
+    __all__.add(each)
 __all__.remove('__init__')
 
-class BangCommand(dict):
-    """A package containing dynamically reloadable modules."""
-    def __init__(self):
-	for each in __all__:
-	    self + each
-	
-    def __add__(self, name):
-	self[name] = getattr(__import__('bang.' + name), name)
+def bang(self, event):
+    import re
+    import importer
+    match = re.search(expression[0], event.arguments()[0])
+    if match:
+        try:
+            module = importer.__import__(match.group(1), globals(), locals(), 'plugins/bang')
+            if module:
+                module.handle_say(self, event.source(), event.target(), event.arguments()[0])
+        except ImportError:
+            return
+        except:
+            raise
 
-    def __sub__(self, name):
-	del(self[name])
-	del(sys.modules["bang.%s" % name])
+expression = ("^\!(\w+).*$", bang)

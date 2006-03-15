@@ -1,23 +1,18 @@
 #!/usr/bin/python
-"""Store regexp patterns and the reactions for them.
+"""Plugin management."""
+import importer
+import re
+from glob import glob
 
-This should be a priority dictionary named expressions."""
+expressions = {}
 
-def bang(self, event):
-    import re
-    import importer
-    match = re.search('^\!(\w+).*$', event.arguments()[0])
-    if match:
-        try:
-            module = importer.__import__(match.group(1), globals(), locals(), 'bang')
-            if module:
-                module.handle_say(self, event.source(), event.target(), event.arguments()[0])
-        except ImportError:
-            return
-        except:
-            raise
+submodules = glob("plugins/*")
+__all__ = set()
+for each in submodules:
+    each = each.split('/')[-1].split('.')[0]
+    __all__.add(each)
+__all__.remove('__init__')
 
-expressions = {
-    '^\!(\w+).*$':bang
-}
-
+for each in __all__:
+    module = importer.__import__(name=each, path="plugins")
+    expressions[re.compile(module.expression[0])] = module.expression[1]
