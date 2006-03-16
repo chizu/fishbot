@@ -33,6 +33,9 @@ class Fishbot(ircbot.SingleServerIRCBot):
 	for channel in self.join:
 	    self.connection.join(channel)
 
+    def on_kick(self, c, event):
+        self.on_welcome(c, event)
+    
     def on_privmsg(self, c, event):
         self.on_msg(c, event)
 
