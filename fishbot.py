@@ -69,6 +69,12 @@ class Fishbot(ircbot.SingleServerIRCBot):
 	    if each:
 		self.connection.privmsg(to, each)
 
+    def action(self, to, message):
+	"""CTCP ACTION wrapper for irclib.connection.ctcp"""
+	for each in message.split("\n"):
+	    if each:
+		self.connection.ctcp("ACTION", to, each)
+                
     def respond_to(self, source, to):
 	"""Reply to the correct place based on the source and destination"""
 	# Target to reply to
