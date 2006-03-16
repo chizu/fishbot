@@ -77,9 +77,16 @@ class Fishbot(ircbot.SingleServerIRCBot):
 	    # reply to the private message.
 	    respond = irclib.nm_to_n(source)
 	return respond
+
+    def getnick(self, s):
+        n = s.find("!")
+        if n > -1:
+            return s[:n]
+        else:
+            return s
     
 def main():
-    bot = Fishbot(channels = ["#botfucking"])
+    bot = Fishbot(channels = ["#chshackers","#botfucking"])
     bot.start()
 
 if __name__ == "__main__":
