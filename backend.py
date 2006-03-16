@@ -1,7 +1,8 @@
 import sqlobject
 import sys, os
 
-connect_string = "sqlite:" + os.getcwd() + sys.argv[0].split('/')[1] + ".sqlite"
+#connect_string = "sqlite:" + os.getcwd() + sys.argv[0].split('/')[1] + ".sqlite"
+connect_string = "postgres://fishbot@localhost/fishbot"
 sqlobject.sqlhub.processConnnection = sqlobject.connectionForURI(connect_string)
 
 class Message(sqlobject.SQLObject):
