@@ -52,6 +52,8 @@ def urlmatcher(self, event):
     """The magic of URL parsing."""
     import re,urllib,string
     import xml.dom.minidom, xml.parsers.expat
+
+    urllib.URLopener.version = """Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.7.8) Gecko/20050609 Firefox/1.0.4"""
     
     m = regex.search(event.arguments()[0])
     respond = self.respond_to(event.source(), event.target())
