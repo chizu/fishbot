@@ -15,7 +15,7 @@ import backend
 import importer
 
 # Python builtins
-import thread, time, re, os, traceback
+import thread, time, os, sys, traceback
 #import traceback, re, urllib, sys, xml.dom.minidom, time, os, urlmatch
 
 class Fishbot(ircbot.SingleServerIRCBot):
@@ -24,6 +24,7 @@ class Fishbot(ircbot.SingleServerIRCBot):
 	irclib.DEBUG = 1 # Debugging output on the console
         self.join = channels
         self.version = "Fishbot 3.0 Alpha"
+        self.execution_time = time.time()
 	ircbot.SingleServerIRCBot.__init__(self, [(server, port)], nick, nick)
 
     def on_nicknameinuse(self, c, event):
@@ -56,6 +57,11 @@ class Fishbot(ircbot.SingleServerIRCBot):
 	#thread.start_new_thread(self.msg,(to, event.arguments()[0]))
 
     def on_msg(self, c, event):
+        # Re-exec fishbot if fishbot itself has changed.
+        if os.stat(sys.argv[0]).st_mtime > self.execution_time:
+            self.disconnect("Fishbot has changed enough to require a restart.")
+            os.execv(sys.argv[0], sys.argv[1:])
+        # Execute the plugin tree as required.
         plugins = importer.__import__("plugins")
         for each in plugins.expressions:
             match = each.search(event.arguments()[0])
