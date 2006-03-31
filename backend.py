@@ -20,12 +20,11 @@ def sql_readonly_query(string):
 
 def add_event(event):
     """Accepts an irclib event, and adds it to the events table."""
-    cursor.execute("""INSERT INTO events VALUES (%s, %s, %s, %s);""", (time.strftime("%Y-%m-%dT%H:%M:%S"), event.source(), event.target(), string.join(event.arguments())))
+    cursor.execute("""INSERT INTO events VALUES (%s, %s, %s, %s, %s);""", (time.strftime("%Y-%m-%dT%H:%M:%S"), event.source(), event.target(), event.eventtype(), string.join(event.arguments())))
     db.commit()
 
 def last(resource, count=1):
     """Return the last 'count' of things said by a nick or channel."""
-    print "SOURCE ==== %s" % resource
     cursor.execute("""SELECT * FROM events WHERE source='%s' ORDER BY timestamp DESC LIMIT %s;""" % (resource,count))
     return cursor.fetchall()
 
