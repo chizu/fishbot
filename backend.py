@@ -1,17 +1,22 @@
-import sqlobject
-import sys, os
+#!/usr/bin/python
+import pgdb
+import sys, os, time
 
-#connect_string = "sqlite:" + os.getcwd() + sys.argv[0].split('/')[1] + ".sqlite"
-connect_string = "postgres://fishbot@localhost/fishbot"
-sqlobject.sqlhub.processConnnection = sqlobject.connectionForURI(connect_string)
+db = pgdb.connect(user='fishbot', host='localhost', database='fishbot')
+cursor = db.cursor()
 
-class Message(sqlobject.SQLObject):
-    source = sqlobject.UnicodeCol()
-    target = sqlobject.UnicodeCol()
-    message = sqlobject.UnicodeCol()
-    message_time = sqlobject.DateTimeCol()
-    raw = sqlobject.UnicodeCol(default = None)
+def sql_query(string):
+    """Execute a raw query."""
+    cursor.execute(string)
+    return cursor.fetchall()
 
+def add_event(event):
+    """Accepts an irclib event, and adds it to the events table."""
+    arguments = str(event.arguments()).replace('[','{').replace(']','}').replace('\'','"')
+    cursor.execute("""INSERT INTO events VALUES ('%s', '%s', '%s', '%s');""" % (time.strftime("%Y-%m-%dT%H:%M:%S"), event.source(), event.target(), arguments))
+    db.commit()
 
-print "init"
-#Message.createTable()
+def last(resource, count=1):
+    """Return the last 'count' of things said by a nick or channel."""
+    cursor.execute("""SELECT * FROM events WHERE source='%s' ORDER BY timestamp DESC LIMIT %s;""" % (resource,count))
+    return cursor.fetchall()

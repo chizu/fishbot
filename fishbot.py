@@ -25,6 +25,7 @@ class Fishbot(ircbot.SingleServerIRCBot):
         self.join = channels
         self.version = "Fishbot 3.0 Alpha"
         self.execution_time = time.time()
+        self.backend = backend
 	ircbot.SingleServerIRCBot.__init__(self, [(server, port)], nick, nick)
 
     def on_nicknameinuse(self, c, event):
@@ -94,6 +95,7 @@ class Fishbot(ircbot.SingleServerIRCBot):
 	return respond
 
     def getnick(self, s):
+        """Return an IRC nick from an IRC hostmask"""
         n = s.find("!")
         if n > -1:
             return s[:n]
