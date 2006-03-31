@@ -1,0 +1,8 @@
+create table events (
+timestamp timestamp with time zone,
+source text,
+target text,
+type text,
+arguments text,
+serial bigserial PRIMARY KEY
+);
