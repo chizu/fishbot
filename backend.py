@@ -11,11 +11,13 @@ readcursor = readdb.cursor()
 def sql_query(string):
     """Execute a raw query."""
     cursor.execute(string)
+    db.commit()
     return cursor.fetchall()
 
 def sql_readonly_query(string):
     """Execute a select query."""
     readcursor.execute(string)
+    db.commit()
     return cursor.fetchall()
 
 def add_event(event):
@@ -26,5 +28,6 @@ def add_event(event):
 def last(resource, count=1):
     """Return the last 'count' of things said by a nick or channel."""
     cursor.execute("""SELECT * FROM events WHERE source='%s' ORDER BY timestamp DESC LIMIT %s;""" % (resource,count))
+    db.commit()
     return cursor.fetchall()
 
