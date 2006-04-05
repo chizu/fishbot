@@ -22,22 +22,27 @@ class Fishbot(ircbot.SingleServerIRCBot):
     """An IRC bot that listens for commands and performs various functions on the channel."""
     def __init__(self, server = "irc.sandbenders.org", port = 6667, nick = "Fishbot", channels = ["#chshackers"]):
 	irclib.DEBUG = 1 # Debugging output on the console
-        self.join = channels
+        self.join_channels = channels
         self.version = "Fishbot 3.0 Alpha"
         self.execution_time = time.time()
         self.backend = backend
 	ircbot.SingleServerIRCBot.__init__(self, [(server, port)], nick, nick)
 
+    def quit(self, c, event):
+        if not self.connection.connected:
+            self.connection.connect()
+        self.join(c, event)
+
+    def join(self, c, event):
+	for channel in self.join_channels:
+	    self.connection.join(channel)
+
     def on_nicknameinuse(self, c, event):
 	self.connection.nick(self.connection.get_nickname() + "_")
 
     def on_welcome(self, c, event):
-	for channel in self.join:
-	    self.connection.join(channel)
+        self.join(c, event)
 
-    def on_kick(self, c, event):
-        self.on_welcome(c, event)
-    
     def on_ctcp(self, c, event):
         self.on_msg(c, event)
         
