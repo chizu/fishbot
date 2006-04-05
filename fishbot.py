@@ -15,7 +15,7 @@ import backend
 import importer
 
 # Python builtins
-import thread, time, os, sys, traceback
+import thread, time, os, sys, traceback, string
 #import traceback, re, urllib, sys, xml.dom.minidom, time, os, urlmatch
 
 class Fishbot(ircbot.SingleServerIRCBot):
@@ -45,7 +45,16 @@ class Fishbot(ircbot.SingleServerIRCBot):
 
     def on_ctcp(self, c, event):
         self.on_msg(c, event)
-        
+
+    def on_join(self, c, event):
+        self.on_msg(c, event)
+
+    def on_part(self, c, event):
+        self.on_msg(c, event)
+
+    def on_quit(self, c, event):
+        self.on_msg(c, event)
+
     def on_privmsg(self, c, event):
         self.on_msg(c, event)
 
@@ -73,7 +82,7 @@ class Fishbot(ircbot.SingleServerIRCBot):
         # Execute the plugin tree as required.
         plugins = importer.__import__("plugins")
         for each in plugins.expressions:
-            match = each.search(event.arguments()[0])
+            match = each.search(string.join(event.arguments()))
             if match:
                 print plugins.expressions[each]
                 thread.start_new_thread(plugins.expressions[each],(self,event))
