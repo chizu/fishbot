@@ -21,9 +21,10 @@ import thread, time, os, sys, traceback, string
 class Fishbot(ircbot.SingleServerIRCBot):
     """An IRC bot that listens for commands and performs various functions on the channel."""
     def __init__(self, server = "irc.sandbenders.org", port = 6667, nick = "Fishbot", channels = ["#chshackers"]):
-	irclib.DEBUG = 1 # Debugging output on the console
+	#irclib.DEBUG = True # Message debugging
+        #importer.debug = True # Importer debugging
         self.join_channels = channels
-        self.version = "Fishbot 3.0 Alpha"
+        self.version = "Fishbot 3.0 Beta"
         self.execution_time = time.time()
         self.backend = backend
 	ircbot.SingleServerIRCBot.__init__(self, [(server, port)], nick, nick)
@@ -34,28 +35,38 @@ class Fishbot(ircbot.SingleServerIRCBot):
         self.join(c, event)
 
     def join(self, c, event):
+        """Join the configured channels.
+
+        Fishbot.join_channels specifies the channels this joins."""
 	for channel in self.join_channels:
 	    self.connection.join(channel)
 
     def on_nicknameinuse(self, c, event):
+        """Nickname in use event, create a new nickname."""
 	self.connection.nick(self.connection.get_nickname() + "_")
 
     def on_welcome(self, c, event):
+        """Finished connecting event, join channels."""
         self.join(c, event)
 
     def on_ctcp(self, c, event):
+        """CTCP events, typically CTCP ACTION"""
         self.on_msg(c, event)
 
     def on_join(self, c, event):
+        """User joined a channel event."""
         self.on_msg(c, event)
 
     def on_part(self, c, event):
+        """User left a channel event."""
         self.on_msg(c, event)
 
     def on_quit(self, c, event):
+        """User quit IRC event."""
         self.on_msg(c, event)
 
     def on_privmsg(self, c, event):
+        """Private message event."""
         self.on_msg(c, event)
 
     def on_pubmsg(self, c, event):
@@ -75,6 +86,9 @@ class Fishbot(ircbot.SingleServerIRCBot):
 	#thread.start_new_thread(self.msg,(to, event.arguments()[0]))
 
     def on_msg(self, c, event):
+        """As events occur, call the appropriate hooks in the plugins.
+
+        Any IRC 'event' should call this method, this will log the event and execute the appropriate plugins."""
         # Re-exec fishbot if fishbot itself has changed.
         if os.stat(sys.argv[0]).st_mtime > self.execution_time:
             self.disconnect("Fishbot has changed enough to require a restart.")
@@ -84,7 +98,7 @@ class Fishbot(ircbot.SingleServerIRCBot):
         for each in plugins.expressions:
             match = each.search(string.join(event.arguments()))
             if match:
-                print plugins.expressions[each]
+                print "###Event called: " + str(plugins.expressions[each])
                 thread.start_new_thread(plugins.expressions[each],(self,event))
 
     def say(self, to, message):
