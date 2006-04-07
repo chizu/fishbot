@@ -7,7 +7,7 @@ def handle_say(self, source, to, message):
         spelling = message.split(' ')[1:]
     else:
         result = self.backend.last(source, 2)
-        spelling = [result[0][4]]
+        spelling = [result[1][4]]
 	print result
     for spell in spelling:
         for each in os.popen('echo %s | aspell -a' % re.escape(spell)).readlines():

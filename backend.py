@@ -20,8 +20,10 @@ def sql_query(string, readonly=True):
 
 def add_event(event):
     """Accepts an irclib event, and adds it to the events table."""
+    db.rollback()
     cursor = db.cursor()
     cursor.execute("""INSERT INTO events VALUES (%s, %s, %s, %s, %s);""", (time.strftime("%Y-%m-%dT%H:%M:%S"), event.source(), event.target(), event.eventtype(), string.join(event.arguments())))
+    print dir(db)
     db.commit()
 
 def last(resource, count=1):
@@ -30,4 +32,3 @@ def last(resource, count=1):
     cursor.execute("""SELECT * FROM events WHERE source='%s' ORDER BY timestamp DESC LIMIT %s;""" % (resource,count))
     db.commit()
     return cursor.fetchall()
-

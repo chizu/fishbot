@@ -134,7 +134,7 @@ class Fishbot(ircbot.SingleServerIRCBot):
             return s
     
 def main():
-    bot = Fishbot(channels = ["#botfucking"])
+    bot = Fishbot(channels = ["#chshackers","#botfucking"])
     bot.start()
 
 if __name__ == "__main__":
