@@ -6,7 +6,7 @@ def handle_say(self, source, to, message):
     if len(message.split(' ')) >= 2:
         spelling = message.split(' ')[1:]
     else:
-        spelling = [self.last[self.getnick(source)][0]]
+        spelling = [self.backend.last(source, 2)[0][4]]
     for spell in spelling:
         for each in os.popen('echo %s | aspell -a' % re.escape(spell)).readlines():
             for each in each.split("\n"):
