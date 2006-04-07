@@ -15,7 +15,6 @@ for each in submodules:
 __all__.remove('__init__')
 __all__ = list(__all__)
 __all__.sort()
-print __all__
 
 for each in __all__:
     module = importer.__import__(name=each, path="plugins")
