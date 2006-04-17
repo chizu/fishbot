@@ -20,7 +20,6 @@ def sql_query(string, readonly=True):
 
 def add_event(event):
     """Accepts an irclib event, and adds it to the events table."""
-    db.rollback()
     cursor = db.cursor()
     cursor.execute("""INSERT INTO events VALUES (%s, %s, %s, %s, %s);""", (time.strftime("%Y-%m-%dT%H:%M:%S"), event.source(), event.target(), event.eventtype(), string.join(event.arguments())))
     print dir(db)
