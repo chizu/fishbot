@@ -18,4 +18,8 @@ __all__.sort()
 
 for each in __all__:
     module = importer.__import__(name=each, path="plugins")
-    expressions[re.compile(module.expression[0])] = module.expression[1]
+    expression = re.compile(module.expression[0])
+    if expressions.has_key(expression):
+        expressions[expression].append(module.expression[1])
+    else:
+        expressions[expression] = [module.expression[1]]

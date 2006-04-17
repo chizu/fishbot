@@ -99,7 +99,8 @@ class Fishbot(ircbot.SingleServerIRCBot):
             match = each.search(string.join(event.arguments()))
             if match:
                 print "###Event called: " + str(plugins.expressions[each])
-                thread.start_new_thread(plugins.expressions[each],(self,event))
+                for each in plugins.expressions[each]:
+                    thread.start_new_thread(each,(self,event))
 
     def say(self, to, message):
 	"""Multiple line wrapper for irclib.connection.privmsg"""
