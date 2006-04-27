@@ -1,4 +1,6 @@
 #!/usr/bin/python
+"""!echo - Echo things
+Usage: !echo <text>"""
 import re,os
 
 def handle_say(self, source, to, message):

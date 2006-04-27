@@ -1,4 +1,6 @@
 #!/usr/bin/python
+"""!cowsay - The cow shall speak!
+Usage: !cowsay [-f cowfile] <text>"""
 import re,os
 
 def handle_say(self, source, to, message):
