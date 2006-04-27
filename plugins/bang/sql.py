@@ -1,5 +1,5 @@
 #!/usr/bin/python
-import sys,string
+import sys,string,traceback
 
 def handle_say(self, source, to, message):
     respond = self.respond_to(source, to)
@@ -13,5 +13,6 @@ def handle_say(self, source, to, message):
                 for each in results:
                     self.say(respond, str(each))
     except:
-	self.say(respond, "Incorrect query syntax.")
+        self.say(respond, traceback.format_exc(1))
+	#self.say(respond, "Incorrect query syntax.")
 	raise
