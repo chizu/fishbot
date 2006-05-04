@@ -1,4 +1,6 @@
 #!/usr/bin/python
+"""!bash - Retreive bash.org quotes.
+Usage: !bash"""
 import urllib,string,re,xml.dom.minidom,HTMLParser
 
 def handle_say(self, source, to, message):
