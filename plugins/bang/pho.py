@@ -39,15 +39,12 @@ pho = {'a':'Alpha',
        '9':'Nine'
        }
 
-def handle_say(self, source, to, message):
-    respond = self.respond_to(source, to)
+def bang(pipein, arguments, event):
     response = ""
-    arg = re.search('^!pho (.*)$', message)
-    if arg:
-	arg = arg.group(1)
-	for each in arg:
+    if pipein:
+	for each in pipein:
 	    try:
 		response += pho[each.lower()] + " "
 	    except KeyError:
 		pass
-	self.say(respond, response)
+    return (response, None)
