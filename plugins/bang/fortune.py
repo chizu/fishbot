@@ -1,11 +1,11 @@
 #!/usr/bin/python
+"""!fortune - Print out a fortune.
+Usage: !fortune <fortune file>"""
 import os,re
 
-def handle_say(self, source, to, message):
-    respond = self.respond_to(source, to)
-    if len(message.split(' ')) >= 2:
-        fortune_dictionary = message.split(' ')[1]
+def bang(pipein, arguments, event):
+    if len(arguments) > 0:
+        fortune_dictionary = arguments
     else:
         fortune_dictionary = ""
-    for each in os.popen('fortune -n 500 -s %s' % re.escape(fortune_dictionary)).readlines():
-	self.say(respond, each)
+    return (os.popen('fortune -n 500 -s %s' % re.escape(fortune_dictionary)).readlines(), None)

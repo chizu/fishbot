@@ -1,7 +1,7 @@
 #!/usr/bin/python
+"""!sex - Spout silly, random porn-like text
+Usage: !sex"""
 import os
 
-def handle_say(self, source, to, message):
-    respond = self.respond_to(source, to)
-    for each in os.popen('sex').readlines():
-	self.say(respond, each)
+def bang(pipein, arguments, event):
+    return (os.popen('sex').readlines(), None)

@@ -4,18 +4,21 @@ Usage: !help <command>"""
 import string
 import plugins.bang
 import importer
+import fishapi
 
-def handle_say(self, source, to, message):
-    respond = self.respond_to(source, to)
-    if len(message.split()) is 1:
-        self.say(respond, self.version + ". Available commands are: !" + string.join(plugins.bang.__all__,', !') + ".")
+def bang(pipein, arguments, event):
+    if len(arguments) is 0:
+        return (fishapi.version + ". Available commands are: !" + string.join(plugins.bang.__all__,', !') + ".", None)
     else:
-        for each in message.split()[1:]:            
+        reply = []
+        for each in arguments.split():
             try:
                 if each[0] is "!":
                     each = each[1:]
                 help_string = importer.__import__(each, globals(), locals(), 'plugins/bang').__doc__
-                self.say(respond, help_string)
+                reply.append(help_string)
             except:
-                self.say(respond, "No help available for %s." % each)
+                reply.append("No help available for %s." % each)
                 raise
+        return (reply, None)
+    

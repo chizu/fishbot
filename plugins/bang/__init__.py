@@ -20,7 +20,7 @@ def bang(self, event):
     for pipe in pipes:
         if pipe:
             name = re.search(expression[0], pipe).group(1)
-            arguments = re.search(expression[0], pipe).group(2)
+            arguments = string.strip(re.search(expression[0], pipe).group(2))
             try:
                 module = importer.__import__(name, globals(), locals(), 'plugins/bang')
                 if hasattr(module, 'bang'):
