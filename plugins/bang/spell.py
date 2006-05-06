@@ -1,16 +1,19 @@
 #!/usr/bin/python
+"""!spell - Spellcheck your last line, or anything passed to !spell.
+Usage: !spell, !spell <text>, or <text> | !spell"""
 import os,re
+import backend
 
-def handle_say(self, source, to, message):
-    respond = self.respond_to(source, to)
-    if len(message.split(' ')) >= 2:
-        spelling = message.split(' ')[1:]
+def bang(pipein, arguments, event):
+    if pipein or arguments:
+        spelling = [pipein or arguments]
     else:
-        result = self.backend.last(source, 2)
+        result = backend.last(event.source(), 2)
         spelling = [result[1][4]]
-	print result
+    reply = []
     for spell in spelling:
         for each in os.popen('echo %s | aspell -a' % re.escape(spell)).readlines():
             for each in each.split("\n"):
                 if len(each) > 0 and each[0] == '&':
-                    self.say(respond, each)
+                    reply.append(each)
+    return (reply, None)

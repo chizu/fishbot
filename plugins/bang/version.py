@@ -1,4 +1,6 @@
 #!/usr/bin/python
-def handle_say(self, source, to, message):
-    respond = self.respond_to(source, to)
-    self.say(respond, self.version)
+"""!version - Fishbot's version."""
+import fishapi
+
+def bang(pipein, arguments, event):
+    return (fishapi.version, None)
