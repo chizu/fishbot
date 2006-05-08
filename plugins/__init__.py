@@ -1,5 +1,21 @@
 #!/usr/bin/python
-"""Plugin management."""
+"""Fishbot Plugins
+
+Top level of the plugin tree. In general, if you're writing a Fishbot add-on, it should be a child of this package.
+
+Plugins are fairly simple, they have only one required component. A plugin is anything with the property expression that is a tuple with a regular expression and a function call.
+
+A plugin that does nothing would be,
+>>> def do_nothing(self, event): pass
+>>> expression=('', do_nothing)
+Which says to Fishbot 'When the empty regular expression is encountered, execute the pass function.'
+
+The regular expression can be anything parsable by the python re module. These are checked in alphabetical order (according to the plugin filename) and executed when they match.
+
+The function can be any python function that accepts the arguments (self, event) where self is the Fishbot object, and event is the irclib event that triggered this function.
+
+For a more complete working example, see the cowsgomoo.py plugin.
+"""
 import importer
 import re
 from glob import glob
