@@ -1,5 +1,5 @@
 #!/usr/bin/python
-import importer
+import importer, time
 
 version = "Fishbot 3.0 - Beta"
 execution_time = time.time()

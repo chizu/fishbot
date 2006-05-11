@@ -34,7 +34,8 @@ def bang(self, event):
                     if pubmsg and pipe is pipes[-1]:
                         if isinstance(pubmsg, list):
                             for each in pubmsg:
-                                self.connection.privmsg(respond, each)
+                                for each in each.split('\n'):
+                                    self.connection.privmsg(respond, each)
                         else:
                             self.connection.privmsg(respond, pubmsg)
                     elif pubmsg:
