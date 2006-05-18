@@ -2,5 +2,4 @@
 import importer, time
 
 version = "Fishbot 3.0 - Beta"
-execution_time = time.time()
-
+#execution_time - set by main class

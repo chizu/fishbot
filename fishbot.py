@@ -12,6 +12,7 @@ import ircbot
 # Fishbot specific
 import plugins
 import backend
+import fishapi
 import importer
 
 # Python builtins
@@ -24,9 +25,9 @@ class Fishbot(ircbot.SingleServerIRCBot):
 	#irclib.DEBUG = True # Message debugging
         #importer.debug = True # Importer debugging
         self.join_channels = channels
-        self.version = "Fishbot 3.0 Beta"
-        self.execution_time = time.time()
-        self.backend = backend
+        fishapi.version = "Fishbot 3.0 Beta"
+        fishapi.execution_time = time.time()
+        fishapi.backend = backend
 	ircbot.SingleServerIRCBot.__init__(self, [(server, port)], nick, nick)
 
     def quit(self, c, event):
@@ -90,7 +91,7 @@ class Fishbot(ircbot.SingleServerIRCBot):
 
         Any IRC 'event' should call this method, this will log the event and execute the appropriate plugins."""
         # Re-exec fishbot if fishbot itself has changed.
-        if os.stat(sys.argv[0]).st_mtime > self.execution_time:
+        if os.stat(sys.argv[0]).st_mtime > fishapi.execution_time:
             self.disconnect("Fishbot has changed enough to require a restart.")
             os.execv(sys.argv[0], sys.argv[1:])
         # Execute the plugin tree as required.
