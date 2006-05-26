@@ -1,4 +1,6 @@
 #!/usr/bin/python
+"""!pho - Military phonetic alphabet conversion.
+<something> | !pho or !pho <something>"""
 import re
 
 pho = {'a':'Alpha',
@@ -41,8 +43,8 @@ pho = {'a':'Alpha',
 
 def bang(pipein, arguments, event):
     response = ""
-    if pipein:
-	for each in pipein:
+    if pipein or arguments:
+	for each in pipein or arguments:
 	    try:
 		response += pho[each.lower()] + " "
 	    except KeyError:

@@ -32,14 +32,14 @@ def bang(self, event):
 
                     (pubmsg, action) = module.bang(pipein, arguments, event)
                     if pubmsg and pipe is pipes[-1]:
-                        if isinstance(pubmsg, list):
+                        if isinstance(pubmsg, (list, tuple)):
                             for each in pubmsg:
                                 for each in each.split('\n'):
                                     self.connection.privmsg(respond, each)
                         else:
                             self.connection.privmsg(respond, pubmsg)
                     elif pubmsg:
-                        if isinstance(pubmsg, list):
+                        if isinstance(pubmsg, (list, tuple)):
                             pipein = string.join(pubmsg)
                         else:
                             pipein = pubmsg

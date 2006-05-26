@@ -1,9 +1,13 @@
 #!/usr/bin/python
 """!cowsay - The cow shall speak!
-Usage: <text> | !cowsay"""
-import re,os
+Usage: <text> | !cowsay -f <cowfile>"""
+import re,os,getopt,string
 
 def bang(pipein, arguments, event):
-    cowsay = pipein or arguments
-    return (os.popen('cowsay ' + re.escape(cowsay)).readlines(), None)
-
+    cowfile = ''
+    options, args = getopt.getopt(arguments.split(), 'f:')
+    for each in options:
+        if each[0] == '-f':
+            cowfile = '-f ' + each[1]
+    cowsay = pipein or string.join(args) or "Mooo"
+    return (os.popen('cowsay ' + cowfile + " " + re.escape(cowsay)).readlines(), None)

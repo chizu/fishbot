@@ -28,6 +28,7 @@ class Fishbot(ircbot.SingleServerIRCBot):
         fishapi.version = "Fishbot 3.0 Beta"
         fishapi.execution_time = time.time()
         fishapi.backend = backend
+        fishapi.fishbot = self
 	ircbot.SingleServerIRCBot.__init__(self, [(server, port)], nick, nick)
 
     def quit(self, c, event):
