@@ -21,7 +21,7 @@ import thread, time, os, sys, traceback, string
 
 class Fishbot(ircbot.SingleServerIRCBot):
     """An IRC bot that listens for commands and performs various functions on the channel."""
-    def __init__(self, server = "irc.sandbenders.org", port = 6667, nick = "Fishbot", channels = ["#chshackers"]):
+    def __init__(self, server = "ash.chshackers.com", port = 6667, nick = "Fishbot", channels = ["#chshackers"]):
 	#irclib.DEBUG = True # Message debugging
         #importer.debug = True # Importer debugging
         self.join_channels = channels
@@ -91,6 +91,7 @@ class Fishbot(ircbot.SingleServerIRCBot):
         """As events occur, call the appropriate hooks in the plugins.
 
         Any IRC 'event' should call this method, this will log the event and execute the appropriate plugins."""
+        print fishapi.backend.last(event.source())
         # Re-exec fishbot if fishbot itself has changed.
         if os.stat(sys.argv[0]).st_mtime > fishapi.execution_time:
             self.disconnect("Fishbot has changed enough to require a restart.")

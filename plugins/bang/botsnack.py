@@ -1,14 +1,7 @@
 #!/usr/bin/python
 """Cookies are delicious delicacies."""
-import backend
-
-def handle_say(self, source, to, message):
-    # self here is going to be the main Fishbot object
-    respond = self.respond_to(source, to)
-    
-    if hasattr(self,'botsnack'):
-        self.botsnack += 1
+def bang(pipein, arguments, event):
+    if event.source()[0:6] == "Sauce!":
+        return
     else:
-        self.botsnack = 1
-    
-    self.say(respond, ":)")
+        return (":)", None)

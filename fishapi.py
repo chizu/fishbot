@@ -13,3 +13,4 @@ def halt(message):
 def restart(message):
     fishbot.disconnect(message)
     os.execv(sys.argv[0], sys.argv[1:])
+    sys.exit(0)
