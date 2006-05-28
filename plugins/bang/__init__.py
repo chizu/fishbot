@@ -40,7 +40,7 @@ def bang(self, event):
                             self.connection.privmsg(respond, pubmsg)
                     elif pubmsg:
                         if isinstance(pubmsg, (list, tuple)):
-                            pipein = string.join(pubmsg)
+                            pipein = string.join(pubmsg, '\n')
                         else:
                             pipein = pubmsg
                     if action:
