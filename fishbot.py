@@ -21,7 +21,7 @@ import thread, time, os, sys, traceback, string
 
 class Fishbot(ircbot.SingleServerIRCBot):
     """An IRC bot that listens for commands and performs various functions on the channel."""
-    def __init__(self, server = "ash.chshackers.com", port = 6667, nick = "Fishbot", channels = ["#chshackers"]):
+    def __init__(self, server = "irc.chshackers.com", port = 6667, nick = "Fishbot", channels = ["#chshackers"]):
 	#irclib.DEBUG = True # Message debugging
         #importer.debug = True # Importer debugging
         self.join_channels = channels
@@ -40,6 +40,7 @@ class Fishbot(ircbot.SingleServerIRCBot):
         """Join the configured channels.
 
         Fishbot.join_channels specifies the channels this joins."""
+        self.connection.oper('chizu','peanutbutter');
 	for channel in self.join_channels:
 	    self.connection.join(channel)
 
@@ -91,7 +92,7 @@ class Fishbot(ircbot.SingleServerIRCBot):
         """As events occur, call the appropriate hooks in the plugins.
 
         Any IRC 'event' should call this method, this will log the event and execute the appropriate plugins."""
-        print fishapi.backend.last(event.source())
+        #print fishapi.backend.last(event.source())[0][0]
         # Re-exec fishbot if fishbot itself has changed.
         if os.stat(sys.argv[0]).st_mtime > fishapi.execution_time:
             self.disconnect("Fishbot has changed enough to require a restart.")
@@ -138,7 +139,10 @@ class Fishbot(ircbot.SingleServerIRCBot):
             return s
     
 def main():
-    bot = Fishbot(channels = ["#chshackers","#botfucking"])
+    import urllib
+    urllib.URLopener.version = """Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.0.4) Gecko/20060508 Firefox/1.5.0.4"""
+
+    bot = Fishbot(channels = ["#chshackers","#botfucking","#noflood"])
     bot.start()
 
 if __name__ == "__main__":

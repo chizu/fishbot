@@ -9,12 +9,15 @@ for each in submodules:
 __all__.remove('__init__')
 
 def bang(self, event):
-    # Early exit for spam.
-    #if self.last[self.getnick(event.source())][0] == event.arguments()[0]:
-    #    return
     import re
     import importer
     import irclib
+
+    if re.search("yleto", event.source()):
+        return
+    # Early exit for spam.
+    #if self.last[self.getnick(event.source())][0] == event.arguments()[0]:
+    #    return
     pipes = [string.strip(i) for i in event.arguments()[0].split('|')]
     pipein = ""
     for pipe in pipes:

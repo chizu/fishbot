@@ -3,7 +3,7 @@
 import urllib,re
 
 # Spoof Firefox for the purposes of googling.
-urllib.URLopener.version = """Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.7.8) Gecko/20050609 Firefox/1.0.4"""
+#urllib.URLopener.version = """Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.7.8) Gecko/20050609 Firefox/1.0.4"""
 
 def handle_say(self, source, to, message):
     # self here is going to be the main Fishbot object
