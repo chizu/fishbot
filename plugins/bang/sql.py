@@ -1,18 +1,17 @@
 #!/usr/bin/python
-import sys,string,traceback
+import sys,string,traceback,fishapi
 
-def handle_say(self, source, to, message):
-    respond = self.respond_to(source, to)
+def bang(pipein, arguments, event):
+    query = arguments or pipein
     try:
-	if len(message.split()) >= 2:
-            query = string.join(message.split()[1:])
-            results = self.backend.sql_query(query)
-            if len(results) > 6:
-                self.say(respond, "Query returned %s rows." % len(results))
-            else:
-                for each in results:
-                    self.say(respond, str(each))
+        results = fishapi.backend.sql_query(query)
+        if len(results) > 6:
+            return ("Query returned %s rows." % len(results), None)
+        else:
+            values = ""
+            for each in results:
+                values += str(each)
+            return (values, None)
     except:
-        self.say(respond, traceback.format_exc(1))
-	#self.say(respond, "Incorrect query syntax.")
 	raise
+        return (traceback.format_exc(1), None)

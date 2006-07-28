@@ -40,5 +40,4 @@ def add_event(event):
 
 def last(resource, count=1):
     """Return the last 'count' of things said by a nick or channel."""
-    return sql_query("""SELECT * FROM events WHERE source='%s' ORDER BY timestamp DESC LIMIT %s;""" % (resource,count))
-
+    return sql_query("""SELECT * FROM events WHERE source='%s' OR target='%s' ORDER BY timestamp DESC LIMIT %s;""" % (resource, resource, count))

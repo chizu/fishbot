@@ -13,8 +13,6 @@ def bang(self, event):
     import importer
     import irclib
 
-    if re.search("yleto", event.source()):
-        return
     # Early exit for spam.
     #if self.last[self.getnick(event.source())][0] == event.arguments()[0]:
     #    return
