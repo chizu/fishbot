@@ -5,8 +5,6 @@ Usage: !s/<select>/<replace>/<options>"""
 import re,sys,os,string,difflib
 import fishapi
 
-perl = True
-
 def bang(pipein, arguments, event):
     # This regexp is to split correctly on only unescaped / slashes like
     # 'asjdf/as[ad/c]df/as\/df' needs.
@@ -21,32 +19,26 @@ def bang(pipein, arguments, event):
         else:
             lines = 2
         # Search globally, or just the user executing the command
-        if 'g' in options:
-            search_domain = string.join([i[4] for i in fishapi.backend.last(event.target(), lines)[1:]], "\n")
+        if 'g' in options or 'M' in options:
+            #search_domain = string.join([i[4] for i in fishapi.backend.last(event.target(), lines)[1:]], "\n")
+            search_domain = fishapi.backend.last(event.target(), lines)[1:]
         else:
-            search_domain = string.join([i[4] for i in fishapi.backend.last(event.source(), lines)[1:]], "\n")
-        print search_domain
-        # Build the perl command
-        if perl:
-            perl_command = 'perl';
-            perl_command += " -e '$pattern = \"%s\";'" % pattern
-            perl_command += " -e '$repl = \"%s\";'" % repl
-            #perl_command += " -e '$options = \"%s\";'" % options
-            perl_command += " -e '$result = \"%s\";'" % search_domain
-            perl_command += " -e '$result =~ s/$pattern/$repl/g;'"
-            perl_command += " -e 'print $result;'"
-            # Return only changed lines
-            print perl_command
-            result = os.popen(perl_command).readlines()
+            #search_domain = string.join([i[4] for i in fishapi.backend.last(event.source(), lines)[1:]], "\n")
+            search_domain = fishapi.backend.last(event.source(), lines)[1:]
+            for each in search_domain:
+                each[4] = re.sub('^ACTION', fishapi.getnick(each[1]), each[4])
+        try:
+            option_values = {'I':re.I, 'L':re.L, 'M':re.M, 'S':re.S, 'U':re.U, 'X':re.X,
+                             'i':re.I,           'g':re.M}
+            # eval, be careful changing this as to not allow arbitrary
+            # python to be executed
+            compiled = re.compile(pattern, options and eval('|'.join(options) or None, None, option_values))
             returned = []
-            for n in range(len(result)):
-                if result[n] != search_domain[n]:
-                    returned.append(result[n])
+            for each in search_domain:
+                if compiled.search(each[4]):
+                    returned.append("%s meant to say: %s" % (fishapi.getnick(each[1]), compiled.sub(repl, each[4])))
             return (returned, None)
-        # Without perl, do some simple stuff anyways with python
-        else:
-            try:
-                return ("%s meant to say: %s" % (fishapi.getnick(event.source()), re.sub(pattern, repl, search_domain)), None)
-            except:
-                raise
-    return ("Invalid regular expression (check for missing /'s)", None)
+        except:
+            raise
+    else:
+        return ("Invalid regular expression (check for missing /'s)", None)
