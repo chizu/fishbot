@@ -1,6 +1,7 @@
 #!/usr/bin/python
-"""!s - Regular expression substitution,
-optionally uses the full Perl regexp engine.
+"""!s - Regular expression substitution. Options available are:
+The python standard re ones, some perl (g,i), and a number for
+number of lines to scan (0-9).
 Usage: !s/<select>/<replace>/<options>"""
 import re,sys,os,string,difflib
 import fishapi
