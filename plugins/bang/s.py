@@ -5,7 +5,7 @@ Usage: !s/<select>/<replace>/<options>"""
 import re,sys,os,string,difflib
 import fishapi
 
-perl = False
+perl = True
 
 def bang(pipein, arguments, event):
     # This regexp is to split correctly on only unescaped / slashes like
