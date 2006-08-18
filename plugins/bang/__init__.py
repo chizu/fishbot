@@ -1,4 +1,21 @@
 #!/usr/bin/python
+"""Bang(!) command plugins
+
+This Fishbot plugin in turn implements it's own plugin system. These are simple, and if you want to make a new Fishbot command in the style of "!<something> arguments" you should make one of these.
+
+These plugins are just a normal python module. Any python code can go in these plugins. Suppose you have a file named 'hello.py'. A simple example would be:
+
+def bang(pipein, arguments, event):
+    return ("Hello world.", None)
+
+This would cause Fishbot to say "Hello world." when it saw !hello on a channel.
+
+That's the basic idea. Other things to know are, pipein contains anything piped in to your command (!echo test | !hello, and pipein would contain the string "test"), arguments is anything following the command (!hello world, and arguments will have the string " world" in it), and event is an irclib event for information on who/what said !hello in the first place.
+
+("Hello world.", None) tells Fishbot to say something to the source of command. If you wanted it to do /me "Hello World" it would be (None, "Hello World").
+
+Fishapi is probably also useful if you want to do anything more than trivial. See its documentation for using it.
+"""
 import sys, string
 from glob import glob
 submodules = glob("plugins/bang/*")
