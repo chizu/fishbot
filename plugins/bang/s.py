@@ -21,10 +21,8 @@ def bang(pipein, arguments, event):
             lines = 2
         # Search globally, or just the user executing the command
         if 'g' in options or 'M' in options:
-            #search_domain = string.join([i[4] for i in fishapi.backend.last(event.target(), lines)[1:]], "\n")
             search_domain = fishapi.backend.last(event.target(), lines)[1:]
         else:
-            #search_domain = string.join([i[4] for i in fishapi.backend.last(event.source(), lines)[1:]], "\n")
             search_domain = fishapi.backend.last(event.source(), lines)[1:]
             for each in search_domain:
                 each[4] = re.sub('^ACTION', fishapi.getnick(each[1]), each[4])
@@ -33,7 +31,8 @@ def bang(pipein, arguments, event):
                              'i':re.I,           'g':re.M}
             # eval, be careful changing this as to not allow arbitrary
             # python to be executed
-            compiled = re.compile(pattern, options and eval('|'.join(options) or None, None, option_values))
+            print options
+            compiled = re.compile(pattern, options and eval('|'.join(options), None, option_values) or 0)
             returned = []
             for each in search_domain:
                 if compiled.search(each[4]):
