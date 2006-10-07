@@ -8,4 +8,4 @@ def bang(pipein, arguments, event):
         options = arguments
     else:
         options = ""
-    return (os.popen('ddate %s' % re.escap(options)).readlines(), None)
+    return (os.popen('ddate %s' % re.escape(options)).readlines(), None)
