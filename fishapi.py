@@ -22,3 +22,10 @@ def restart(message):
     fishbot.disconnect(message)
     os.execv(sys.argv[0], sys.argv[1:])
     sys.exit(0)
+
+def http_grep(url, regexp):
+    page = urllib.urlopen(url).readlines()
+    for each in page:
+        search = re.search(regexp, each, re.M)
+        if search:
+            return search.groups()
