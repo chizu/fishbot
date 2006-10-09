@@ -47,7 +47,7 @@ def bang(self, event):
                         respond = event.target() # Reply to the channel
                     else:
                         respond = irclib.nm_to_n(event.source()) # Private message
-
+                        
                     (pubmsg, action) = module.bang(pipein, arguments, event)
                     if pubmsg and pipe is pipes[-1]:
                         if isinstance(pubmsg, (list, tuple)):
@@ -64,9 +64,9 @@ def bang(self, event):
                     if action:
                         if isinstance(action, list):
                             for each in action:
-                                self.connection.ctcp("ACTION", to, each)
+                                self.connection.ctcp("ACTION", respond, each)
                         else:
-                            self.connection.ctcp("ACTION", to, action)
+                            self.connection.ctcp("ACTION", respond, action)
 
                 elif hasattr(module, 'handle_say'):
                     # Old API
