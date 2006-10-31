@@ -1,7 +1,7 @@
 #!/usr/bin/python
 import importer, time
 import sys, os
-import urllib
+import urllib, re
 
 version = "Fishbot 3.0 - Beta"
 #execution_time - set by main class
@@ -25,7 +25,6 @@ def restart(message):
     sys.exit(0)
 
 def http_grep(url, regexp):
-    url = urllib.quote(url)
     page = urllib.urlopen(url).readlines()
     for each in page:
         search = re.search(regexp, each, re.M)
