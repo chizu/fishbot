@@ -25,7 +25,7 @@ def restart(message):
     sys.exit(0)
 
 def http_grep(url, regexp):
-    url = urllib.urlencode(url)
+    url = urllib.quote(url)
     page = urllib.urlopen(url).readlines()
     for each in page:
         search = re.search(regexp, each, re.M)

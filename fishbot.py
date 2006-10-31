@@ -140,9 +140,9 @@ class Fishbot(ircbot.SingleServerIRCBot):
     
 def main():
     import urllib
-    urllib.URLopener.version = """Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.0.4) Gecko/20060508 Firefox/1.5.0.4"""
+    urllib.URLopener.version = """Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.1b2) Gecko/20060906 Firefox/2.0b2"""
 
-    bot = Fishbot(channels = ["#chshackers","#botfucking","#noflood"])
+    bot = Fishbot(channels = ["#chshackers","#botfucking","#noflood", "#mmo-dev"])
     bot.start()
 
 if __name__ == "__main__":
