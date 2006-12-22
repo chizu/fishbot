@@ -1,4 +1,5 @@
 #!/usr/bin/python
+"""Functions to share with modules isolated from the Fishbot object."""
 import importer, time
 import sys, os
 import urllib, re

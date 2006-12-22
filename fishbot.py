@@ -1,9 +1,9 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 """Fishbot 3 - The movie!
 
 Now in technicolor. Actually now rewritten for modularity and more extensability. This release brings a way for Fishbot to keep data between sessions mostly.
 
-Fishbot is distributed under the GNU General Public License Version 2.0
+Fishbot is distributed under the GNU General Public License Version 2.0.
 """
 # IRC libraries
 import irclib
@@ -17,7 +17,10 @@ import importer
 
 # Python builtins
 import thread, time, os, sys, traceback, string
-#import traceback, re, urllib, sys, xml.dom.minidom, time, os, urlmatch
+
+# Set a user agent in case later code attempts to use urllib
+import urllib
+urllib.URLopener.version = """Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.1b2) Gecko/20060906 Firefox/2.0b2"""
 
 class Fishbot(ircbot.SingleServerIRCBot):
     """An IRC bot that listens for commands and performs various functions on the channel."""
@@ -102,7 +105,7 @@ class Fishbot(ircbot.SingleServerIRCBot):
         for each in plugins.expressions:
             match = each.search(string.join(event.arguments()))
             if match:
-                print "###Event called: " + str(plugins.expressions[each])
+                print "Event called: " + str(plugins.expressions[each])
                 for each in plugins.expressions[each]:
                     thread.start_new_thread(each,(self,event))
 
@@ -139,10 +142,7 @@ class Fishbot(ircbot.SingleServerIRCBot):
             return s
     
 def main():
-    import urllib
-    urllib.URLopener.version = """Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.1b2) Gecko/20060906 Firefox/2.0b2"""
-
-    bot = Fishbot(channels = ["#chshackers","#botfucking","#noflood", "#mmo-dev"])
+    bot = Fishbot(channels = ["#chshackers", "#mmo-dev"])
     bot.start()
 
 if __name__ == "__main__":
