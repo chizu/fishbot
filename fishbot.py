@@ -101,13 +101,17 @@ class Fishbot(ircbot.SingleServerIRCBot):
             self.disconnect("Fishbot has changed enough to require a restart.")
             os.execv(sys.argv[0], sys.argv[1:])
         # Execute the plugin tree as required.
-        plugins = importer.__import__("plugins")
-        for each in plugins.expressions:
-            match = each.search(string.join(event.arguments()))
-            if match:
-                print "Event called: " + str(plugins.expressions[each])
-                for each in plugins.expressions[each]:
-                    thread.start_new_thread(each,(self,event))
+        try:
+            plugins = importer.__import__("plugins")
+            for each in plugins.expressions:
+                match = each.search(string.join(event.arguments()))
+                if match:
+                    print "Event called: " + str(plugins.expressions[each])
+                    for each in plugins.expressions[each]:
+                        thread.start_new_thread(each,(self,event))
+        except:
+            # A plugin has failed, report why, but don't take down the whole bot.
+            traceback.print_last()
 
     def say(self, to, message):
 	"""Multiple line wrapper for irclib.connection.privmsg"""
