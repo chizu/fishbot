@@ -8,7 +8,7 @@ def bang(pipein, arguments, event):
     url = "http://www.google.com/search?hl=en&q="+ re.sub(" ", "+", search) +"&btnG=Google+Search"
     groups = fishapi.http_grep(url, "<font size\=\+1><b>(.*?)<\/b>")
     try:
-        response = re.sub('<sup>', '^', groups[1])
+        response = re.sub('<sup>', '^', groups[0])
         response = re.sub('<.*?>', '', response)
         response = re.sub('([0-9]) ([0-9])', '\\1,\\2', response)
         entities = re.findall('\&#(.*?)\;', response)
