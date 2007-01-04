@@ -3,7 +3,7 @@
 def address(self, event):
     import re, plugins.bang
     prefix = "^\s*" + self.connection.get_nickname() + "\W+"
-    if re.search(prefix, event.arguments()[0]):
+    if len(event.arguments()) > 0 and re.search(prefix, event.arguments()[0]):
         event.arguments()[0] = re.sub(prefix, "!", event.arguments()[0])
         plugins.bang.bang(self, event)
 
