@@ -1,14 +1,26 @@
 #!/usr/bin/python
-"""Fishbot Convert Lookup"""
+"""!convert - Convert between things using google."""
 import urllib,re
+import urllib, re, fishapi
 
-# Spoof Firefox for the purposes of googling.
-urllib.URLopener.version = """Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.7.8) Gecko/20050609 Firefox/1.0.4"""
+def bang(pipein, arguments, event):
+    search = pipein + " " + arguments
+    url = "http://www.google.com/search?hl=en&q="+ re.sub(" ", "+", search) +"&btnG=Google+Search"
+    groups = fishapi.http_grep(url, "<font size\=\+1><b>(.*?)<\/b>")
+    try:
+        response = re.sub('<sup>', '^', groups[1])
+        response = re.sub('<.*?>', '', response)
+        response = re.sub('([0-9]) ([0-9])', '\\1,\\2', response)
+        entities = re.findall('\&#(.*?)\;', response)
+        for n in entities:
+            response = re.sub('&#'+n+';', chr(int(n)), response)
+        return (response, None)
+    except NameError:
+        return ("Look it up yourself, Google sucks.", None)
 
 def handle_say(self, source, to, message):
     # self here is going to be the main Fishbot object
     respond = self.respond_to(source, to)
-
     if (re.search("^!convert (.*)", message)):
 	# probably shouldn't be considered a simple command.
 	# maybe break this off into another function
