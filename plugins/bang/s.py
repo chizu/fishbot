@@ -36,7 +36,7 @@ def bang(pipein, arguments, event):
             returned = []
             for each in search_domain:
                 if compiled.search(each[4]):
-                    returned.append("%s meant to say: %s" % (fishapi.getnick(each[1]), compiled.sub(repl, each[4])))
+                    returned.append("%s meant to say: %s" % (fishapi.getnick(each[1]), compiled.sub(repl, each[4]).replace("\/", "/")))
             return (returned, None)
         except:
             raise
