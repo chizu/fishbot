@@ -37,8 +37,13 @@ def bang(self, event):
     pipein = ""
     for pipe in pipes:
         if pipe:
-            name = re.search(expression[0], pipe).group(1)
-            arguments = string.strip(re.search(expression[0], pipe).group(2))
+            postpipe = re.search(expression[0], pipe)
+            if not postpipe:
+                # invalid bang command syntax
+                print "bang: invalid syntax - '" + pipe + "'"
+                return
+            name = postpipe.group(1)
+            arguments = string.strip(postpipe.group(2))
             try:
                 module = importer.__import__(name, globals(), locals(), 'plugins/bang')
                 if hasattr(module, 'bang'):
