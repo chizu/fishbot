@@ -1,10 +1,10 @@
 #!/usr/bin/python
 """Execute !<command> code when '<nickname> <command>' is said."""
 def address(self, event):
-    import re, plugins.bang
+    import re, bang
     prefix = "^\s*" + self.connection.get_nickname() + "\W+"
     if len(event.arguments()) > 0 and re.search(prefix, event.arguments()[0]):
         event.arguments()[0] = re.sub(prefix, "!", event.arguments()[0])
-        plugins.bang.bang(self, event)
+        bang.bang(self, event)
 
 expression = ('.*', address)
