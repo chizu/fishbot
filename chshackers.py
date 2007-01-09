@@ -1,6 +1,6 @@
 #!/usr/bin/python
 """Example Fishbot script."""
-import fishbot
+from fishbot import Fishbot
 
 bot = Fishbot(server = "irc.chshackers.com", channels = ["#chshackers", "#mmo-dev"])
 bot.start()
