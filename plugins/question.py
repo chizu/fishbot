@@ -1,7 +1,7 @@
 #!/usr/bin/python
 def questions(self, event):
     import random
-    if self.connection.get_nickname() in event.arguments()[0]:
+    if event.arguments()[0].startswith(self.connection.get_nickname()):
         responses = [
             # Standard eight ball
             "Signs point to yes.",
