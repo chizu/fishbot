@@ -43,7 +43,8 @@ class Fishbot(ircbot.SingleServerIRCBot):
         """Join the configured channels.
 
         Fishbot.join_channels specifies the channels this joins."""
-        self.connection.oper('chizu','peanutbutter');
+        if hasattr(self, "oper"):
+            self.connection.oper(self.oper["username"], self.oper["password"])
 	for channel in self.join_channels:
 	    self.connection.join(channel)
 
