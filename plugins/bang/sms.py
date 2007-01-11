@@ -1,20 +1,48 @@
 #!/usr/bin/python
 """An SMS module for fishbot.  This mostly acts as a mail relay."""
 
-def bang(pipein, arguments, event):
-    import imaplib,smtplib
-    from threading import Timer
+import fishapi,imaplib
+from threading import Timer
+
+def login():
     server = 'spicious.com'       #options for the script: mail server
     port = 993                    # port (this is for SSL)
     user = 'irc'                  #imap username
     passwd = 'SMS2ircw00t'        #imap password
+
+    mc = imaplib.IMAP4_SSL(server, port)
+    mc.login(user,passwd)
+    mc.select()
+    return mc
+
+def timeout():
+    outstr = []
+    mc = login()
+    typ, newmessages = mc.search(None, 'NEW')
+    newmessages = newmessages[0].split()
+    if len(newmessages) > 0:
+        outstr.append("New SMS Arrived:")
+        for mno in newmessages:
+            typ, data = mc.fetch(mno, '(BODY[HEADER.FIELDS (SUBJECT FROM)] BODY[TEXT])')
+            headers = data[0][1].split("\r\n")
+            outstr.append(headers[0])
+            outstr.append(headers[1])
+            body = data[1][1].split("\r\n")
+            body = data[1][1].split("\r\n")
+            for line in body:
+                outstr.append(line)
+
+        outstr = "\n".join(outstr)        
+        fishapi.say('#fishbot', outstr)
+    t = Timer(10.0, timeout)
+    t.start()
+
+timeout()
+
+def bang(pipein, arguments, event):
+    import smtplib
     out_srv = 'smtp.comcast.net' #outgoing mail server
     src_add = 'irc@spicious.com'  #source email address ( for replies )
-    def login():
-        mc = imaplib.IMAP4_SSL(server, port)
-        mc.login(user,passwd)
-        mc.select()
-        return mc
 
     arguments = arguments.split()
 
@@ -68,21 +96,6 @@ def bang(pipein, arguments, event):
         return(outstr, None)
 
     if arguments[0] == 'check':
-        outstr = []
-        mc = login()
-        typ, newmessages = mc.search(None, 'NEW')
-        newmessages = newmessages[0].split()
-        if len(newmessages) > 0:
-            outstr.append("New SMS Arrived:")
-        for mno in newmessages:
-            typ, data = mc.fetch(mno, '(BODY[HEADER.FIELDS (SUBJECT FROM)] BODY[TEXT])')
-            headers = data[0][1].split("\r\n")
-            outstr.append(headers[0])
-            outstr.append(headers[1])
-            body = data[1][1].split("\r\n")
-            body = data[1][1].split("\r\n")
-            for line in body:
-                outstr.append(line)
         return(outstr, None)
 
     if arguments[0] == 'to' and len(arguments) > 2:
