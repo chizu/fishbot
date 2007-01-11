@@ -1,5 +1,11 @@
 #!/usr/bin/python
-"""An SMS module for fishbot.  This mostly acts as a mail relay."""
+"""An SMS module for fishbot.
+All new sms'es will be announced within 10 seconds of arrival.
+Commands are:
+list - to list all sms'es
+read <num> - print out message number <num>
+del <num> - delete message number <num>
+to <address> <message> - send an sms to <address>"""
 
 import fishapi,imaplib
 from threading import Timer
