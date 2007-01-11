@@ -8,7 +8,14 @@ import fishapi
 
 def bang(pipein, arguments, event):
     if len(arguments) is 0:
-        return (fishapi.version + ". Available commands are: !" + string.join(plugins.bang.__all__,', !') + ".", None)
+        from glob import glob
+        submodules = glob("plugins/bang/*")
+        commands = set()
+        for each in submodules:
+            each = each.split('/')[-1].split('.')[0]
+            commands.add(each)
+        commands.remove('__init__')
+        return (fishapi.version + ". Available commands are: !" + string.join(commands,', !') + ".", None)
     else:
         reply = []
         for each in arguments.split():
@@ -21,4 +28,3 @@ def bang(pipein, arguments, event):
                 reply.append("No help available for %s." % each)
                 raise
         return (reply, None)
-    

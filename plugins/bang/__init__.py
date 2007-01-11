@@ -52,7 +52,7 @@ def bang(self, event):
                         respond = event.target() # Reply to the channel
                     else:
                         respond = irclib.nm_to_n(event.source()) # Private message
-                        
+
                     (pubmsg, action) = module.bang(pipein, arguments, event)
                     if pubmsg and pipe is pipes[-1]:
                         if isinstance(pubmsg, (list, tuple)):
