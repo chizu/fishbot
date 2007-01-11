@@ -31,3 +31,6 @@ def http_grep(url, regexp):
         search = re.search(regexp, each, re.M)
         if search:
             return search.groups()
+
+def say(to, message):
+    fishbot.say(to, message)
