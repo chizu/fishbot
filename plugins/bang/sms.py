@@ -2,13 +2,14 @@
 """An SMS module for fishbot.  This mostly acts as a mail relay."""
 
 def bang(pipein, arguments, event):
-    import imaplib
+    import imaplib,smtplib
     from threading import Timer
-    server = 'spicious.com' #options for the script: mail server
-    port = 993 # port (this is for SSL)
-    user = 'irc'
-    passwd = 'SMS2ircw00t'
-
+    server = 'spicious.com'       #options for the script: mail server
+    port = 993                    # port (this is for SSL)
+    user = 'irc'                  #imap username
+    passwd = 'SMS2ircw00t'        #imap password
+    out_srv = 'smtp.comcast.net' #outgoing mail server
+    src_add = 'irc@spicious.com'  #source email address ( for replies )
     def login():
         mc = imaplib.IMAP4_SSL(server, port)
         mc.login(user,passwd)
@@ -83,3 +84,16 @@ def bang(pipein, arguments, event):
             for line in body:
                 outstr.append(line)
         return(outstr, None)
+
+    if arguments[0] == 'to' and len(arguments) > 2:
+        to = arguments[1]
+        message = "From: " + src_add + "\r\n"
+        message += "To: " + to + "\r\n"
+        message += "Subject: " + event._target + "\r\n"
+        message += " ".join(arguments[2:])
+        print message
+        mc = smtplib.SMTP(out_srv)
+        mc.sendmail(src_add, to, message)
+        mc.quit()
+        del(mc)
+        return("SMS successfully sent.", None)
