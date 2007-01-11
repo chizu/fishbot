@@ -102,9 +102,8 @@ def bang(pipein, arguments, event):
         to = arguments[1]
         message = "From: " + src_add + "\r\n"
         message += "To: " + to + "\r\n"
-        message += "Subject: " + event._target + "\r\n"
+        message += "Subject: " + event._target + "\r\n\r\n"
         message += " ".join(arguments[2:])
-        print message
         mc = smtplib.SMTP(out_srv)
         mc.sendmail(src_add, to, message)
         mc.quit()
