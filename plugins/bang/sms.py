@@ -33,7 +33,7 @@ def timeout():
                 outstr.append(line)
 
         outstr = "\n".join(outstr)        
-        fishapi.say('#fishbot', outstr)
+        fishapi.say('#chshackers', outstr)
     t = Timer(10.0, timeout)
     t.start()
 
