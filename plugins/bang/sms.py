@@ -10,6 +10,8 @@ to <address> <message> - send an sms to <address>"""
 import fishapi,imaplib
 from threading import Timer
 
+announce = "#chshackers"
+
 def login():
     server = 'spicious.com'       #options for the script: mail server
     port = 993                    # port (this is for SSL)
@@ -39,7 +41,7 @@ def timeout():
                 outstr.append(line)
 
         outstr = "\n".join(outstr)        
-        fishapi.say('#chshackers', outstr)
+        fishapi.say(announce, outstr)
     t = Timer(10.0, timeout)
     t.start()
 
@@ -53,7 +55,9 @@ def bang(pipein, arguments, event):
     arguments = arguments.split()
 
     if len(arguments) < 1:
-        return("Please pass a command to !sms: list")
+        return("Please pass a command to !sms: list", None)
+
+    
 
     if arguments[0] == 'list':
         outstr = []
@@ -115,3 +119,23 @@ def bang(pipein, arguments, event):
         mc.quit()
         del(mc)
         return("SMS successfully sent.", None)
+
+    if arguments[0] == 'ab':
+        if arguments[1] == 'add' and len(arguments) == 4:
+            res = fishapi.backend.sql_query("SELECT name FROM addressbk WHERE name='" + arguments[2] + "' AND address='" + arguments[3] + "';")) > 0
+            if len(res) < 0:
+                fishapi.backend.sql_query("UPDATE addressbk SET address='" + arguments[3] + "' WHERE name='" + arguments[2] + "';", False)
+                return('Duplicate Address, replacing ' + res[1], None)
+            else:
+                fishbot.backend.sql_query("INSERT INTO addressbk VALUES( '" + arguments[2] + "', '" + arguments[3] + "' );")
+                return("Address Saved", None)
+
+        if arguments[1] == 'search' and len(arguments) == 3:
+            res = fishapi.backend.sql_query("SELECT * FROM addressbk WHERE name ~ '" + arguments[2] + "' OR address ~ '" + arguments[3] +"':")
+            outstr = []
+            for line in res:
+                outstr.append("[" + line[2] + "] " + line[0] + " - " + line[1])
+
+            return(outstr, None)
+        
+        
