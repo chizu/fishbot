@@ -7,4 +7,4 @@ def address(self, event):
         event.arguments()[0] = re.sub(prefix, "!", event.arguments()[0])
         bang.bang(self, event)
 
-expression = ('.*', address)
+expression = ("", address)
