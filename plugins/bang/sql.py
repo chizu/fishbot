@@ -8,9 +8,9 @@ def bang(pipein, arguments, event):
         if len(results) > 6:
             return ("Query returned %s rows." % len(results), None)
         else:
-            values = ""
+            values = []
             for each in results:
-                values += str(each)
+                values.append(str(each))
             return (values, None)
     except:
 	raise
