@@ -122,7 +122,7 @@ def bang(pipein, arguments, event):
 
     if arguments[0] == 'ab':
         if arguments[1] == 'add' and len(arguments) == 4:
-            res = fishapi.backend.sql_query("SELECT name FROM addressbk WHERE name='" + arguments[2] + "' AND address='" + arguments[3] + "';")) > 0
+            res = fishapi.backend.sql_query("SELECT name FROM addressbk WHERE name='" + arguments[2] + "' AND address='" + arguments[3] + "';") > 0
             if len(res) < 0:
                 fishapi.backend.sql_query("UPDATE addressbk SET address='" + arguments[3] + "' WHERE name='" + arguments[2] + "';", False)
                 return('Duplicate Address, replacing ' + res[1], None)
