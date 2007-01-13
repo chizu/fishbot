@@ -5,7 +5,6 @@ def bang(pipein, arguments, event):
     import backend
 
     arguments = arguments.split()
-    backend.chesterfield.debug.sql = True
 
     if len(arguments) < 1:
         return("Please give ab a command", None)
