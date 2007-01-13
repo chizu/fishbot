@@ -115,7 +115,7 @@ def bang(pipein, arguments, event):
     if arguments[0] == 'to' and len(arguments) > 2:
         out_add = address(-1, name=arguments[1])
 
-        if out_add.address:
+        if out_add:
             to = out_add.address
         else:
             to = arguments[1]
