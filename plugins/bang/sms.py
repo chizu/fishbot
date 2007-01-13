@@ -48,7 +48,12 @@ def timeout():
 timeout()
 
 def bang(pipein, arguments, event):
-    import smtplib
+    import smtplib,backend
+
+    class address(backend.DatabaseObject):
+        name = ""
+        address = ""
+
     out_srv = 'smtp.comcast.net' #outgoing mail server
     src_add = 'irc@spicious.com'  #source email address ( for replies )
 
@@ -57,7 +62,6 @@ def bang(pipein, arguments, event):
     if len(arguments) < 1:
         return("Please pass a command to !sms: list", None)
 
-    
 
     if arguments[0] == 'list':
         outstr = []
@@ -109,7 +113,13 @@ def bang(pipein, arguments, event):
         return(outstr, None)
 
     if arguments[0] == 'to' and len(arguments) > 2:
-        to = arguments[1]
+        out_add = address(-1, name=arguments[1])
+
+        if out_add.address:
+            to = out_add.address
+        else:
+            to = arguments[1]
+        
         message = "From: " + src_add + "\r\n"
         message += "To: " + to + "\r\n"
         message += "Subject: " + event._target + "\r\n\r\n"
@@ -119,23 +129,5 @@ def bang(pipein, arguments, event):
         mc.quit()
         del(mc)
         return("SMS successfully sent.", None)
-
-    if arguments[0] == 'ab':
-        if arguments[1] == 'add' and len(arguments) == 4:
-            res = fishapi.backend.sql_query("SELECT name FROM addressbk WHERE name='" + arguments[2] + "' AND address='" + arguments[3] + "';") > 0
-            if len(res) < 0:
-                fishapi.backend.sql_query("UPDATE addressbk SET address='" + arguments[3] + "' WHERE name='" + arguments[2] + "';", False)
-                return('Duplicate Address, replacing ' + res[1], None)
-            else:
-                fishbot.backend.sql_query("INSERT INTO addressbk VALUES( '" + arguments[2] + "', '" + arguments[3] + "' );")
-                return("Address Saved", None)
-
-        if arguments[1] == 'search' and len(arguments) == 3:
-            res = fishapi.backend.sql_query("SELECT * FROM addressbk WHERE name ~ '" + arguments[2] + "' OR address ~ '" + arguments[3] +"':")
-            outstr = []
-            for line in res:
-                outstr.append("[" + line[2] + "] " + line[0] + " - " + line[1])
-
-            return(outstr, None)
         
         
