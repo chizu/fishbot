@@ -2,16 +2,20 @@
 """Addressbook Plugin"""
 
 def bang(pipein, arguments, event):
-    import fishapi
+    import backend
 
     arguments = arguments.split()
+    backend.chesterfield.debug.sql = True
 
-    class address(fishapi.DatabaseObject):
+    if len(arguments) < 1:
+        return("Please give ab a command", None)
+
+    class address(backend.DatabaseObject):
         name = ""
         address = ""
 
     if arguments[0] == 'add' and len(arguments) == 3:
-        addr = address(-1, name = '^' + arguments[1] + '$', address = '^' + arguments[2] + '$')
+        addr = address(-1, name = arguments[1], address = arguments[2]  )
 
         if len(addr) > 0:
             outstr = "Replacing " + addr.name
@@ -20,11 +24,19 @@ def bang(pipein, arguments, event):
         addr = address(name = arguments[1], address = arguments[2])
         return(outstr, None)
 
-    if arguments[0] == 'find' and len(arguments) == 2:
+    elif (arguments[0] == 'find' and len(arguments) == 2) or arguments[0] == 'list':
         outstr = []
-        addrs = address(-1, name = arguments[1] + " OR address ~ '" arguments[1] "'")
+        
+        if arguments[0] == 'find':
+            addrs = address(-1, name = arguments[1] + "' OR address ~ '" + arguments[1])
+        else:
+            addrs = address(-1)
 
-        for each in addr:
-            outstr.append("[" + each.id + "] "+ each.name + " - " + each.address)
+        print addrs
+            
+        for each in addrs:
+            outstr.append("[" + str(each.id) + "] "+ each.name + " - " + each.address)
 
         return(outstr, None)
+
+    return(None, None)
