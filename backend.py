@@ -13,8 +13,8 @@ writedb = pgdb.connect(user='fishbot', host='localhost', database='fishbot')
 readdb = pgdb.connect(user='fishbotread', host='localhost', database='fishbot')
 
 # Chesterfield derived objects
-DatabaseObject = chesterfield.DatabaseObject(user='fishbot', host='localhost', database='fishbot')
-ReadOnlyDatabaseObject = chesterfield.DatabaseObject(user='fishbotread', host='localhost', database='fishbot')
+DatabaseObject = chesterfield.DatabaseObject(user='fishbot', host='localhost', database='fishbot').object
+#ReadOnlyDatabaseObject = chesterfield.DatabaseObject(user='fishbotread', host='localhost', database='fishbot')
 
 def sql_query(string, readonly=True):
     """Execute a raw query.
