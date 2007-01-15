@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """Addressbook Plugin
-!ab [add <name> <address> | remove <name> <address> | list | find <name or address>]"""
+!ab [add <name> <address> | remove <name> | list | find <name or address>]"""
 
 def bang(pipein, arguments, event):
     import backend
