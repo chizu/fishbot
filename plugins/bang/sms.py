@@ -94,7 +94,10 @@ def bang(pipein, arguments, event):
         mc.close()
         mc.logout()
         del(mc)
-        return(outstr, None)
+        if len(outstr) > 1024:
+            return ("Message length exceeded, " + str(len(outstr) - 1024) + " characters too long.", None)
+        else:
+            return(outstr, None)
 
     if arguments[0] == 'del' and len(arguments) == 2:
         outstr = []
