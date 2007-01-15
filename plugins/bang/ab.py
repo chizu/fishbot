@@ -1,5 +1,6 @@
 #!/usr/bin/env python
-"""Addressbook Plugin"""
+"""Addressbook Plugin
+!ab [add <name> <address> | remove <name> <address> | list | find <name or address>]"""
 
 def bang(pipein, arguments, event):
     import backend
@@ -14,7 +15,7 @@ def bang(pipein, arguments, event):
         address = ""
 
     if arguments[0] == 'add' and len(arguments) == 3:
-        addr = address(-1, name = arguments[1], address = arguments[2]  )
+        addr = address(-1, name = arguments[1])
 
         if len(addr) > 0:
             outstr = "Replacing " + addr.name
@@ -22,7 +23,6 @@ def bang(pipein, arguments, event):
             outstr = "Added"
         addr = address(name = arguments[1], address = arguments[2])
         return(outstr, None)
-
     elif (arguments[0] == 'find' and len(arguments) == 2) or arguments[0] == 'list':
         outstr = []
         
@@ -37,5 +37,12 @@ def bang(pipein, arguments, event):
             outstr.append("[" + str(each.id) + "] "+ each.name + " - " + each.address)
 
         return(outstr, None)
-
+    elif (arguments[0] == 'remove' or arguments[0] == 'delete' or arguments[0] == 'rm'):
+        addr = address(-1, name = arguments[1])
+        if len(addr) > 0:
+            addr.drop()
+            return ("Removing " + addr.name, None)
+        else:
+            return ("No records matching " + arguments[1] + " found.", None)
+        
     return(None, None)
