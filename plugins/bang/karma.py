@@ -5,6 +5,7 @@ import backend
 from plugins.karma import Karma
 
 def bang(pipein, arguments, event):
+    arguments = arguments.strip().lower()
     if arguments.strip() == 'stats':
         all_karma = [(x.score, x.string) for x in Karma(-1)]
         large = max(all_karma)
