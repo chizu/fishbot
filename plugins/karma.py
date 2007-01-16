@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Execute !<command> code when '<nickname> <command>' is said."""
+"""Track karma for stuff."""
 import backend
 
 class Karma(backend.DatabaseObject):
@@ -10,6 +10,7 @@ class Karma(backend.DatabaseObject):
 def karma(self, event):
     import re, fishapi
     before, string, operator = re.search(expression[0], event.arguments()[0]).groups()
+    string = string.strip().lower()
     if operator == '++':
         Karma(string=string).score += 1
     elif operator == '--':
