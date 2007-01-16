@@ -1,12 +1,14 @@
 #!/usr/bin/env python
 """!karma - Show karma stats for things.
 !karma <thing>"""
-import backend
+import backend, fishapi
 from plugins.karma import Karma
 
 def bang(pipein, arguments, event):
     arguments = arguments.strip().lower()
-    if arguments.strip() == 'stats':
+    if not arguments:
+        arguments = fishapi.getnick(event.source()).strip().lower()
+    if arguments == 'stats':
         all_karma = [(x.score, x.string) for x in Karma(-1)]
         large = max(all_karma)
         small = min(all_karma)
