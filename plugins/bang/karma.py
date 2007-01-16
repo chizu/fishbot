@@ -9,7 +9,7 @@ def bang(pipein, arguments, event):
         all_karma = [(x.score, x.string) for x in Karma(-1)]
         large = max(all_karma)
         small = min(all_karma)
-        return "Highest score: %s (%s) - Lowest score: %s (%s)" % (large[0], large[1], small[0], small[1])
+        return ("Highest score: %s (%s) - Lowest score: %s (%s)" % (large[0], large[1], small[0], small[1]), None)
     else:
         thing = Karma(-1, string=arguments)
         if thing:
