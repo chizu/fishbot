@@ -1,4 +1,4 @@
-create table events (
+CREATE TABLE events (
 timestamp timestamp with time zone,
 source text,
 target text,
@@ -6,3 +6,4 @@ type text,
 arguments text,
 serial bigserial PRIMARY KEY
 );
+CREATE INDEX events_timestamp_index ON events (timestamp);
