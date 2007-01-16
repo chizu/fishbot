@@ -14,3 +14,5 @@ def bang(pipein, arguments, event):
         thing = Karma(-1, string=arguments)
         if thing:
             return ("'%s' has a score of: %s" % (arguments, thing.score), None)
+        else:
+            return (None, None)
