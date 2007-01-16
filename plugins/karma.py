@@ -14,7 +14,7 @@ def karma(self, event):
     count = 0
     for each in backend.last(event.source(),25):
         if string + operator in each[4]:
-            count++
+            count += 1
     if count > 5:
         Karma(string=fishapi.getnick(event.source())).score -= 50
         return
