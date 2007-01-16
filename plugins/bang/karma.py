@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """!karma - Show karma stats for things.
-!karma <thing>"""
+!karma <thing> | stats"""
 import backend, fishapi
 from plugins.karma import Karma
 
@@ -18,4 +18,4 @@ def bang(pipein, arguments, event):
         if thing:
             return ("'%s' has a score of: %s" % (arguments, thing.score), None)
         else:
-            return (None, None)
+            return ("'%s' has neutral karma." % (arguments), None)
