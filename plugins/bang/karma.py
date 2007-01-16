@@ -6,7 +6,7 @@ from plugins.karma import Karma
 
 def bang(pipein, arguments, event):
     if arguments.strip() == 'stats':
-        all_karma = [x.score, x.string for x in Karma(-1)]
+        all_karma = [(x.score, x.string) for x in Karma(-1)]
         large = max(all_karma)
         small = min(all_karma)
         return "Highest score: %s (%s) - Lowest score: %s (%s)" % (large.string, large.score, small.string, small.score)
