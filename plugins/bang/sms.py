@@ -88,7 +88,8 @@ def bang(pipein, arguments, event):
         headers = data[0][1].split("\r\n")
         outstr.append(headers[0])
         outstr.append(headers[1])
-        body = data[1][1].split("\r\n")
+        # Filter out footers, then split on newlines
+        body = "\r\n".join(data[1][1].split("\r\n--\r\n")[:-1]).split("\r\n")
         for line in body:
             outstr.append(line)
         mc.close()
