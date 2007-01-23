@@ -7,10 +7,14 @@ read <num> - print out message number <num>
 del <num> - delete message number <num>
 to <address> <message> - send an sms to <address>"""
 
-import fishapi,imaplib
+import fishapi,imaplib,backend
 from threading import Timer
 
 announce = "#chshackers"
+
+class address(backend.DatabaseObject):
+    name = ""
+    address = ""
 
 def login():
     server = 'spicious.com'       #options for the script: mail server
@@ -33,7 +37,12 @@ def timeout():
         for mno in newmessages:
             typ, data = mc.fetch(mno, '(BODY[HEADER.FIELDS (SUBJECT FROM)] BODY[TEXT])')
             headers = data[0][1].split("\r\n")
-            outstr.append(headers[0])
+            inAb = address(-1, address=headers[0].split()[1])
+            if inAb:
+                fromName = inAb.name
+            else:
+                fromName = headers[0].split()[1]
+            outstr.append("From: " + fromName + "\n")
             outstr.append(headers[1])
             # Filter out footers, then split on newlines
             body = "\r\n".join(data[1][1].split("\r\n--\r\n")[:-1]).split("\r\n")
@@ -42,17 +51,14 @@ def timeout():
 
         outstr = "\n".join(outstr)        
         fishapi.say(announce, outstr)
+    
     t = Timer(10.0, timeout)
     t.start()
 
 timeout()
 
 def bang(pipein, arguments, event):
-    import smtplib,backend
-
-    class address(backend.DatabaseObject):
-        name = ""
-        address = ""
+    import smtplib
 
     out_srv = 'smtp.comcast.net' #outgoing mail server
     src_add = 'irc@spicious.com'  #source email address ( for replies )
@@ -126,7 +132,7 @@ def bang(pipein, arguments, event):
         
         message = "From: " + src_add + "\r\n"
         message += "To: " + to + "\r\n"
-        message += "Subject: " + event._target + "\r\n\r\n"
+        message += "Subject: " + event._target + " " + event._source + "\r\n\r\n"
         message += " ".join(arguments[2:])
         mc = smtplib.SMTP(out_srv)
         mc.sendmail(src_add, to, message)
