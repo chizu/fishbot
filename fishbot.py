@@ -104,8 +104,10 @@ class Fishbot(ircbot.SingleServerIRCBot):
         # Execute the plugin tree as required.
         try:
             plugins = importer.__import__("plugins")
+            args = string.join(event.arguments())
+            
             for each in sorted(plugins.expressions):
-                match = each.search(string.join(event.arguments()))
+                match = re.search(each, args)
                 if match:
                     print "Event called: " + str(plugins.expressions[each])
                     for each in plugins.expressions[each]:
