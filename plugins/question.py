@@ -1,8 +1,6 @@
 #!/usr/bin/python
 def questions(self, event):
     import random
-    print event.arguments()
-    print self.connection.get_nickname()
     if event.arguments()[0].startswith(self.connection.get_nickname()):
         responses = [
             # Standard eight ball
