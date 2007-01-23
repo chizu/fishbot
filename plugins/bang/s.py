@@ -31,7 +31,6 @@ def bang(pipein, arguments, event):
                              'i':re.I,           'g':re.M}
             # eval, be careful changing this as to not allow arbitrary
             # python to be executed
-            print options
             compiled = re.compile(pattern, options and eval('|'.join(options), None, option_values) or 0)
             returned = []
             for each in search_domain:
