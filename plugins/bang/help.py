@@ -15,7 +15,7 @@ def bang(pipein, arguments, event):
             each = each.split('/')[-1].split('.')[0]
             commands.add(each)
         commands.remove('__init__')
-        return (fishapi.version + ". Available commands are: !" + string.join(commands,', !') + ".", None)
+        return (fishapi.version + ". Available commands are: !" + string.join(sorted(commands),', !') + ".", None)
     else:
         reply = []
         for each in arguments.split():
