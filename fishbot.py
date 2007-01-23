@@ -16,7 +16,7 @@ import fishapi
 import importer
 
 # Python builtins
-import thread, time, os, sys, traceback, string
+import thread, time, os, sys, traceback, string, re
 
 # Set a user agent in case later code attempts to use urllib
 import urllib

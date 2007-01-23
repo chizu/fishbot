@@ -17,7 +17,6 @@ The function can be any python function that accepts the arguments (self, event)
 For a more complete working example, see the cowsgomoo.py plugin.
 """
 import importer
-import re
 from glob import glob
 
 expressions = {}
