@@ -24,7 +24,7 @@ urllib.URLopener.version = """Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.1b2
 
 class Fishbot(ircbot.SingleServerIRCBot):
     """An IRC bot that listens for commands and performs various functions on the channel."""
-    def __init__(self, server = "irc.chshackers.com", port = 6667, nick = "Fishbot", channels = ["#chshackers"]):
+    def __init__(self, server = "irc.chshackers.com", port = 6667, nick = "Fishbot", channels = []):
 	#irclib.DEBUG = True # Message debugging
         #importer.debug = True # Importer debugging
         self.join_channels = channels
@@ -47,6 +47,8 @@ class Fishbot(ircbot.SingleServerIRCBot):
             self.connection.oper(self.oper["username"], self.oper["password"])
 	for channel in self.join_channels:
 	    self.connection.join(channel)
+            if hasattr(self, "sayonjoin"):
+                self.say(channel, self.sayonjoin)
 
     def on_nicknameinuse(self, c, event):
         """Nickname in use event, create a new nickname."""
