@@ -25,4 +25,4 @@ def karma(self, event):
     else:
         print "karma.py: Something odd has happened."
 
-expression = ("(^.*[^\w ]|^)(.*?)([+]{2}|[-]{2})", karma)
+expression = ("(^.*[^\w' ]|^)(.*?)([+]{2}|[-]{2})", karma)
