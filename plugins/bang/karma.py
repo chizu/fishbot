@@ -8,6 +8,7 @@ def bang(pipein, arguments, event):
     token = arguments.strip().lower()
     if not token:
         token = fishapi.getnick(event.source()).strip().lower()
+        arguments = token
     if token == 'stats':
         all_karma = [(x.score, x.string) for x in Karma(-1)]
         large = max(all_karma)
