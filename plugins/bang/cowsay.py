@@ -11,6 +11,6 @@ def bang(pipein, arguments, event):
             cowfile = '-f ' + each[1]
     cowsay = pipein or string.join(args) or "Mooo"
     # Fish go moo!
-    if re.search('moo', cowsay, re.I):
+    if re.search('moo', cowsay, re.I) or '-- --- ---' in cowsay:
         cowfile = '-f ' + 'fish'
     return (os.popen('cowsay ' + cowfile + " " + re.escape(cowsay)).readlines(), None)
