@@ -77,7 +77,13 @@ def bang(pipein, arguments, event):
         for num in data[0].split():
             typ, data = mc.fetch(num, '(BODY[HEADER.FIELDS (SUBJECT FROM)])')
             headers = data[0][1].split("\r\n")
-            outstr.append(num + " " + headers[0] + " " + headers[1])
+            inAb = address(-1, address=headers[0].split()[1])
+            if inAb:
+                fromStuff = "From: " + inAb.name
+            else:
+                fromStuff = headers[0]
+            
+            outstr.append(num + " " + fromStuff + " " + headers[1])
 
         mc.logout()
         del(mc)
