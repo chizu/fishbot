@@ -7,6 +7,7 @@ def bang(pipein, arguments, event):
     search = pipein + " " + arguments
     url = "http://www.google.com/search?hl=en&q="+ re.sub(" ", "+", search) +"&btnG=Google+Search"
     groups = fishapi.http_grep(url, "<font size\=\+1><b>(.*?)<\/b>")
+    print groups
     try:
         response = re.sub('<sup>', '^', groups[0])
         response = re.sub('<.*?>', '', response)
