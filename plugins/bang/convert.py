@@ -5,7 +5,7 @@ import urllib, re, fishapi
 
 def bang(pipein, arguments, event):
     search = pipein + " " + arguments
-    search = search.replace("+","&#43;")
+    search = search.replace("+","%2B")
     url = "http://www.google.com/search?hl=en&q="+ re.sub(" ", "+", search) +"&btnG=Google+Search"
     groups = fishapi.http_grep(url, "<font size\=\+1><b>(.*?)<\/b>")
     try:
