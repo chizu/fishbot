@@ -39,10 +39,10 @@ def timeout():
             headers = data[0][1].split("\r\n")
             inAb = address(-1, address=headers[0].split()[1])
             if inAb:
-                fromName = inAb.name
+                fromName = "From: " + inAb.name
             else:
-                fromName = headers[0].split()[1]
-            outstr.append("From: " + fromName + "\n")
+                fromName = headers[0]
+            outstr.append(fromName + "\n")
             outstr.append(headers[1])
             # Filter out footers, then split on newlines
             body = "\r\n".join(data[1][1].split("\r\n--\r\n")[:-1]).split("\r\n")
@@ -92,7 +92,12 @@ def bang(pipein, arguments, event):
             return("Error fetching message", None)
         outstr.append("Message " + mno)
         headers = data[0][1].split("\r\n")
-        outstr.append(headers[0])
+        inAb = address(-1, address=headers[0].split()[1])
+        if inAb:
+            fromStuff = "From: " + inAb.name
+        else:
+            fromStuff = headers[0]
+        outstr.append(fromStuff + "\n")
         outstr.append(headers[1])
         # Filter out footers, then split on newlines
         body = "\r\n".join(data[1][1].split("\r\n--\r\n")[:-1]).split("\r\n")
