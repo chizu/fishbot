@@ -26,13 +26,13 @@ class Client(protocols.sock.Client):
 	def __init__(self, nick, realname, hostname, port, ssl=False):
 		self.client_nick = nick
 		self.realname = realname
-		super(Client, self).__init__(hostname, port, ssl)
+		super(Client, self).__init__(self, hostname, port, ssl)
 
 	def action(self, to, message):
 		self.message(to, "\01ACTION " + message + "\01")
 
 	def connect(self):
-		super(Client, self).connect()
+		super(Client, self).connect(self)
 		self.nick(self.client_nick)
 		self.send("USER " + self.client_nick + " 0 * :" + self.realname)
 		self.triggers.register("PING", self.pong)
@@ -40,7 +40,7 @@ class Client(protocols.sock.Client):
 
 	def disconnect(self, reason):
 		self.send("QUIT :" + reason)
-		super(Client, self).disconnect()
+		super(Client, self).disconnect(self)
 
 	def do(self, to, string):
 		"""Multiline wrapper for actions."""

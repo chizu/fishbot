@@ -16,7 +16,7 @@ The function can be any python function that accepts the arguments (self, event)
 
 For a more complete working example, see the cowsgomoo.py plugin.
 """
-import importer
+import importer, threading
 from glob import glob
 
 expressions = {}
@@ -38,3 +38,11 @@ for each in __all__:
         expressions[expression].append(module.expression[1])
     else:
         expressions[expression] = [module.expression[1]]
+
+class PluginThread(threading.Thread):
+	def __init__(self, func, args):
+		self.func = func
+		self.args = args
+
+	def run(self):
+		self.func(*args)

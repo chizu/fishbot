@@ -1,6 +1,6 @@
 #!/usr/bin/python
 """Multiple protocol support interface."""
-import thread, traceback
+import threading, traceback
 
 def load():
 	import importer
@@ -54,36 +54,26 @@ class TriggerManager(object):
 		if self.triggers.has_key(command):
 			self.triggers[command].remove((function, args))
 
+class ClientThread(threading.Thread):
+	def __init__(self, server):
+		self.server = server
+		super(ClientThread, self).__init__(self)
+
+	def run(self):
+		for each in self.server.poll(): pass
+		
 class ThreadClient(object):
 	"""Threaded server and protocol multiplexing."""
 	def __init__(self, servers = {}):
 		self.servers = servers
 		self.threads = {}
 
-	def run(self, name):
-		"""Start up a newly registered protocol."""
-		lock = thread.allocate_lock()
-		def poll_thread(server, lock):
-			while 1:
-				try:
-					lock.acquire(True)
-					for each in server.poll(): pass
-				except KeyboardInterrupt:
-					lock.release()
-					return
-				except:
-					# A protocol failed, report why, but don't take down the whole bot.
-					traceback.print_last()
-					pass
-		self.threads[name] = thread.start_new_thread(poll_thread, (self.servers[name],))
-		return lock
-
 	def start(self):
 		"""Start up all registered protocols."""
-		self.locks = {}
-		for name in self.servers:
-			self.locks[name] = self.run(name)
-		for lock in self.locks.values():
-			lock.acquire(True)
+		for (name, server) in self.servers:
+			self.threads[name] = ClientThread(server)
+			self.threads[name].start()
+		for (name, thread) in self.threads:
+			thread.join()
 
 load()
