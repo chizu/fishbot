@@ -1,12 +1,8 @@
 #!/usr/bin/python
-import urllib,string,re
+import fishapi,string,re
 
-def handle_say(self, source, to, message):
-    respond = self.respond_to(source, to)
-    resource = urllib.urlopen("http://www.webweaving.org/")
-    page = resource.read()
-    resource.close()
-    insult = re.search('(Thou\s[^\n]*)', page)
-    if insult:
-	insult = insult.group(1)
-	self.say(respond, str(' '.join(message.split(' ')[1:])) + ', ' + insult + "!")
+def bang(pipein, arguments, event):
+	groups = fishapi.http_grep("http://www.webweaving.org/", '(Thou\s[^\n]*)')
+	if groups:
+		insult = groups[0]
+		return ((arguments or pipein) + ", " + insult + "!", None)

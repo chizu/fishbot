@@ -9,14 +9,14 @@ class Karma(backend.DatabaseObject):
 
 def karma(self, event):
     import re, fishapi
-    before, string, operator = re.search(expression[0], event.arguments()[0]).groups()
+    before, string, operator = re.search(expression[0], event.arguments).groups()
     string = string.strip().lower()
     count = 0
-    for each in backend.last(event.source(),25):
+    for each in backend.last(event.source,25):
         if string + operator in each[4]:
             count += 1
     if count > 5:
-        Karma(string=fishapi.getnick(event.source())).score -= 50
+        Karma(string=fishapi.getnick(event.source)).score -= 50
         return
     if operator == '++':
         Karma(string=string).score += 1

@@ -3,5 +3,5 @@
 def bang(pipein, arguments, event):
     # pipein is anything piped to the command
     # arguments is "!command <this part>"
-    # event is the event object Fishbot passes down from irclib
+    # event is the event object Fishbot passes down from protocols.<server type>
     return ("This is an example.", "does an example action.")

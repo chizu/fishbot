@@ -53,8 +53,8 @@ def urlmatcher(self, event):
     import re,urllib,string
     import xml.dom.minidom, xml.parsers.expat
 
-    m = regex.search(event.arguments()[0])
-    respond = self.respond_to(event.source(), event.target())
+    m = regex.search(event.arguments)
+    respond = self.respond_to(event.source, event.target)
     if m:
         try:
             resource = urllib.urlopen(regular(m.group()))
@@ -65,20 +65,20 @@ def urlmatcher(self, event):
                 torrent = resource.readlines()
                 result = re.search("name[0-9]*?:(.*?)12:",torrent[0])
                 if hasattr(result, "group"):
-                    self.say(respond, "Torrent Name: " + result.group(1))
+                    event.server.say(respond, "Torrent Name: " + result.group(1))
             else:
-                self.say(respond, "Content Type: " + (resource.info().getheader('Content-Type') or "b0rked webserver"))
+                event.server.say(respond, "Content Type: " + (resource.info().getheader('Content-Type') or "b0rked webserver"))
             resource.close()
             return
         try:
             xhtml = resource.readlines()
             dom = xml.dom.minidom.parseString(string.join(xhtml))
-            self.say(respond, "XHTML, Title: " + getText(dom.getElementsByTagName("title")[0].childNodes))
+            event.server.say(respond, "XHTML, Title: " + getText(dom.getElementsByTagName("title")[0].childNodes))
         except xml.parsers.expat.ExpatError:
             for each in xhtml:
                 if re.compile("\<title.*\>(.*)\<\/title\>",re.I).search(each):
                     match = re.search("\<title.*\>(.*)\<\/title\>",each,re.I)
-                    self.say(respond, "Malformed XML, Title: " + match.group(1))
+                    event.server.say(respond, "Malformed XML, Title: " + match.group(1))
         resource.close()
         return
 

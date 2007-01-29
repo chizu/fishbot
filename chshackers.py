@@ -1,7 +1,14 @@
 #!/usr/bin/python
 """Example Fishbot script."""
 from fishbot import Fishbot
+import protocols
 
-bot = Fishbot(server = "irc.chshackers.com", channels = ["#chshackers", "#mmo-dev"])
-#bot.oper = {'username':'fishbot', 'password':''} # Have Fishbot oper before joining channels
+def oper(server, username, password):
+	server.oper(username, password)
+
+bot = Fishbot({"chshackers":protocols.irc.Client(nick="Fishbot", realname="Fishbot", hostname="grandpa.chshackers.com", port=6667)})
+# Oper on chshackers
+bot.servers["chshackers"].triggers.register("001", oper, (bot.servers["chshackers"], "chizu", "peanutbutter"))
+bot.servers["chshackers"].join("#chshackers")
+bot.servers["chshackers"].join("#mmo-dev")
 bot.start()

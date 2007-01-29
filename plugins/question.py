@@ -1,7 +1,7 @@
 #!/usr/bin/python
 def questions(self, event):
     import random
-    if event.arguments()[0].startswith(self.connection.get_nickname()) or event.target().startswith(self.connection.get_nickname()):
+    if event.arguments.startswith(event.nick) or event.target.startswith(event.nick):
         responses = [
             # Standard eight ball
             "Signs point to yes.",
@@ -33,6 +33,6 @@ def questions(self, event):
             # Random
             "The sky might be octarine. I would go check."
             ]
-        self.say(self.respond_to(event.source(), event.target()), random.choice(responses))
+        event.server.say(self.respond_to(event.source, event.target), random.choice(responses))
         
 expression = ('.*\?\b*$', questions)

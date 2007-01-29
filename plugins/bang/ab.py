@@ -27,12 +27,12 @@ def bang(pipein, arguments, event):
         outstr = []
         
         if arguments[0] == 'find':
-            addrs = address(-1, name = arguments[1] + "' OR address ~ '" + arguments[1])
+            addrs = address(-1, name = arguments[1]) #+ address(-1, address = arguments[1])
         else:
             addrs = address(-1)
 
         print addrs
-            
+
         for each in addrs:
             outstr.append("[" + str(each.id) + "] "+ each.name + " - " + each.address)
 

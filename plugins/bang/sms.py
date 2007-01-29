@@ -7,7 +7,7 @@ read <num> - print out message number <num>
 del <num> - delete message number <num>
 to <address> <message> - send an sms to <address>"""
 
-import fishapi,imaplib,backend
+import imaplib,backend
 from threading import Timer
 
 announce = "#chshackers"
@@ -50,7 +50,7 @@ def timeout():
                 outstr.append(line)
 
         outstr = "\n".join(outstr)        
-        fishapi.say(announce, outstr)
+        event.server.say(announce, outstr)
     
     t = Timer(10.0, timeout)
     t.start()
@@ -143,7 +143,7 @@ def bang(pipein, arguments, event):
         
         message = "From: " + src_add + "\r\n"
         message += "To: " + to + "\r\n"
-        message += "Subject: " + event._target + " " + event._source.split('!')[0] + "\r\n\r\n"
+        message += "Subject: " + event.target + " " + event.source.split('!')[0] + "\r\n\r\n"
         message += " ".join(arguments[2:])
         mc = smtplib.SMTP(out_srv)
         mc.sendmail(src_add, to, message)
