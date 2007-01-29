@@ -70,10 +70,10 @@ class ThreadClient(object):
 
 	def start(self):
 		"""Start up all registered protocols."""
-		for (name, server) in self.servers:
+		for name, server in self.servers.iteritems():
 			self.threads[name] = ClientThread(server)
 			self.threads[name].start()
-		for (name, thread) in self.threads:
+		for name, thread in self.threads.iteritems():
 			thread.join()
 
 load()
