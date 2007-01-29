@@ -49,12 +49,12 @@ class Fishbot(protocols.ThreadClient):
 		"""As events occur, call the appropriate hooks in the plugins.
 
 		Any IRC 'event' should call this method, this will log the event and execute the appropriate plugins."""
-		#print fishapi.backend.last(event.source())[0][0]
 		# Re-exec fishbot if fishbot itself has changed.
-		if os.stat(sys.argv[0]).st_mtime > fishapi.execution_time:
-			for each in self.servers.values():
-				each.disconnect("Fishbot has changed enough to require a restart.")
-			os.execv(sys.argv[0], sys.argv[1:])
+		# This is disabled, it's slightly broken.
+		#if os.stat(sys.argv[0]).st_mtime > fishapi.execution_time:
+		#	for each in self.servers.values():
+		#		each.disconnect("Fishbot has changed enough to require a restart.")
+		#	os.execv(sys.argv[0], sys.argv[1:])
 		# Execute the plugin tree as required.
 		try:
 			plugins = importer.__import__("plugins")
@@ -63,7 +63,8 @@ class Fishbot(protocols.ThreadClient):
 				match = re.search(each, args)
 				if match:
 					name = str(plugins.expressions[each])
-					print "Event called: " + name
+					print "Event: " + event
+					print "Plugin: " + name
 					for each in plugins.expressions[each]:
 						threading.Thread(target=each, name=name, args=(self,event)).start()
 		except:
