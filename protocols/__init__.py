@@ -57,7 +57,7 @@ class TriggerManager(object):
 class ClientThread(threading.Thread):
 	def __init__(self, server):
 		self.server = server
-		super(ClientThread, self).__init__(self)
+		super(ClientThread, self).__init__()
 
 	def run(self):
 		for each in self.server.poll(): pass
