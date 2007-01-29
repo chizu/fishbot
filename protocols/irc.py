@@ -4,10 +4,10 @@ import protocols.sock
 import datetime
 
 class IRCEvent(object):
-	def __init__(self, server, source, command, params, timestamp=None):
+	def __init__(self, server, prefix, command, params, timestamp=None):
 		self.server = server
 		self.nick = server.client_nick
-		self.source = source
+		self.source = prefix
 		self.command = command
 		self.params = params
 		self.target = self.params[0]
@@ -18,7 +18,7 @@ class IRCEvent(object):
 			self.timestamp = timestamp
 		
 	def __str__(self):
-		return "%s %s || %s %s %s" % (':'.join((self.server.hostname, str(self.server.port))), self.timestamp, self.source, self.command, self.params)
+		return "%s %s || %s %s %s" % (':'.join((self.server.hostname, str(self.server.port))), self.timestamp, self.source, self.command, self.arguments)
 
 class Client(protocols.sock.Client):
 	triggers = protocols.TriggerManager()
@@ -73,6 +73,7 @@ class Client(protocols.sock.Client):
 	def poll(self):
 		nextline = ''
 		while 1:
+			print "-" * 10 + "POLLING" + "-" * 10
 			# Handle cut off lines
 			buff = nextline + self.recv()
 			nextline = ''
@@ -102,7 +103,7 @@ class Client(protocols.sock.Client):
 				try:
 					self.triggers.trigger(event.command, event)
 				except protocols.TriggerMissing:
-					print "Unknown protocol reply: ", event
+					print "Unhandled: ", event
 				yield None
 
 	def say(self, to, string):
