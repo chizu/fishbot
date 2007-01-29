@@ -1,6 +1,6 @@
 #!/usr/bin/python
 """Multiple protocol support interface."""
-import threading, traceback
+import thread, traceback
 
 def load():
 	import importer
@@ -72,8 +72,7 @@ class ThreadClient(object):
 					# A protocol failed, report why, but don't take down the whole bot.
 					traceback.print_last()
 					pass
-		self.threads[name] = threading.Thread(target=poll_thread, name=name, args=(self.servers[name],))
-		self.threads[name].start()
+		self.threads[name] = thread.start_new_thread(poll_thread, args=(self.servers[name]))
 
 	def start(self):
 		"""Start up all registered protocols."""

@@ -13,7 +13,7 @@ import fishapi
 import importer
 
 # Python builtins
-import threading, time, os, sys, traceback, re
+import thread, time, os, sys, traceback, re
 
 # Set a user agent in case later code attempts to use urllib
 import urllib
@@ -66,7 +66,7 @@ class Fishbot(protocols.ThreadClient):
 					print "Event: " + event
 					print "Plugin: " + name
 					for each in plugins.expressions[each]:
-						threading.Thread(target=each, name=name, args=(self,event)).start()
+						thread.start_new_thread(each, (self,event))
 		except:
 			# A plugin has failed, report why, but don't take down the whole bot.
 			traceback.print_last()
