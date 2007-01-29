@@ -69,8 +69,8 @@ class Fishbot(protocols.ThreadClient):
 						thread = plugins.PluginThread(each, (self, event))
 						thread.start()
 		except:
-			# A plugin has failed, report why, but don't take down the whole bot.
-			traceback.print_last()
+			# A plugin has failed, don't take down the whole bot.
+			pass
 
 	def respond_to(self, source, to):
 		"""Reply to the correct place based on the source and destination"""
