@@ -66,7 +66,7 @@ class ThreadClient(object):
 		def poll_thread(server, lock):
 			while 1:
 				try:
-					lock.aquire()
+					lock.acquire(True)
 					for each in server.poll(): pass
 				except KeyboardInterrupt:
 					lock.release()
@@ -84,6 +84,6 @@ class ThreadClient(object):
 		for name in self.servers:
 			self.locks[name] = self.run(name)
 		for lock in self.locks.values():
-			lock.aquire(True)
+			lock.acquire(True)
 
 load()
