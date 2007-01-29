@@ -72,7 +72,7 @@ class ThreadClient(object):
 					# A protocol failed, report why, but don't take down the whole bot.
 					traceback.print_last()
 					pass
-		self.threads[name] = thread.start_new_thread(poll_thread, args=(self.servers[name]))
+		self.threads[name] = thread.start_new_thread(poll_thread, (self.servers[name]))
 
 	def start(self):
 		"""Start up all registered protocols."""
