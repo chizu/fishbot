@@ -62,21 +62,28 @@ class ThreadClient(object):
 
 	def run(self, name):
 		"""Start up a newly registered protocol."""
-		def poll_thread(server):
+		lock = thread.allocate_lock()
+		def poll_thread(server, lock):
 			while 1:
 				try:
+					lock.aquire()
 					for each in server.poll(): pass
 				except KeyboardInterrupt:
+					lock.release()
 					return
 				except:
 					# A protocol failed, report why, but don't take down the whole bot.
 					traceback.print_last()
 					pass
 		self.threads[name] = thread.start_new_thread(poll_thread, (self.servers[name],))
+		return lock
 
 	def start(self):
 		"""Start up all registered protocols."""
+		self.locks = {}
 		for name in self.servers:
-			self.run(name)
+			self.locks[name] = self.run(name)
+		for lock in self.locks.values():
+			lock.aquire(True)
 
 load()
