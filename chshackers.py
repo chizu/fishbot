@@ -8,7 +8,7 @@ def oper(server, username, password):
 
 bot = Fishbot({"chshackers":protocols.irc.Client(nick="Fishbot", realname="Fishbot", hostname="grandpa.chshackers.com", port=6667)})
 # Oper on chshackers
-bot.servers["chshackers"].triggers.register("001", oper, (bot.servers["chshackers"], "chizu", "peanutbutter"))
+bot.servers["chshackers"].triggers.register("001", oper, (bot.servers["chshackers"], "username", "password"))
 bot.servers["chshackers"].join("#chshackers")
 bot.servers["chshackers"].join("#mmo-dev")
 bot.start()
