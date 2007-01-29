@@ -43,6 +43,7 @@ class PluginThread(threading.Thread):
 	def __init__(self, func, args):
 		self.func = func
 		self.args = args
+		super(PluginThread, self).__init__()
 
 	def run(self):
-		self.func(*args)
+		self.func(*self.args)

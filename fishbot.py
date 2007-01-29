@@ -48,7 +48,7 @@ class Fishbot(protocols.ThreadClient):
 	def message(self, event):
 		"""As events occur, call the appropriate hooks in the plugins.
 
-		Any IRC 'event' should call this method, this will log the event and execute the appropriate plugins."""
+		Any server 'event' should call this method, this will log the event and execute the appropriate plugins."""
 		# Re-exec fishbot if fishbot itself has changed.
 		# This is disabled, it's slightly broken.
 		#if os.stat(sys.argv[0]).st_mtime > fishapi.execution_time:
@@ -56,21 +56,18 @@ class Fishbot(protocols.ThreadClient):
 		#		each.disconnect("Fishbot has changed enough to require a restart.")
 		#	os.execv(sys.argv[0], sys.argv[1:])
 		# Execute the plugin tree as required.
-		try:
-			plugins = importer.__import__("plugins")
-			args = event.arguments
-			for each in sorted(plugins.expressions):
-				match = re.search(each, args)
-				if match:
-					name = str(plugins.expressions[each])
-					print "Event: " + event
-					print "Plugin: " + name
-					for each in plugins.expressions[each]:
-						thread = plugins.PluginThread(each, (self, event))
-						thread.start()
-		except:
-			# A plugin has failed, don't take down the whole bot.
-			pass
+		plugins = importer.__import__("plugins")
+		args = event.arguments
+		for each in sorted(plugins.expressions):
+			match = re.search(each, args)
+			if match:
+				name = str(plugins.expressions[each])
+				#print "Event: " + str(event)
+				#print "Plugin: " + name
+				print "-" * 10 + "MESSAGE: " + event.arguments
+				for each in plugins.expressions[each]:
+					thread = plugins.PluginThread(each, (self, event))
+					thread.start()
 
 	def respond_to(self, source, to):
 		"""Reply to the correct place based on the source and destination"""

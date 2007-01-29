@@ -11,7 +11,7 @@ class IRCEvent(object):
 		self.command = command
 		self.params = params
 		self.target = self.params[0]
-		self.arguments = " ".join(self.params)
+		self.arguments = " ".join(self.params[1:])
 		if timestamp is None:
 			self.timestamp = datetime.datetime.now()
 		else:
@@ -73,7 +73,6 @@ class Client(protocols.sock.Client):
 	def poll(self):
 		nextline = ''
 		while 1:
-			print "-" * 10 + "POLLING" + "-" * 10
 			# Handle cut off lines
 			buff = nextline + self.recv()
 			nextline = ''
