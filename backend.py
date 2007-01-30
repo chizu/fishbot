@@ -40,7 +40,7 @@ def add_event(event):
     """Accepts an IRCEvent, and adds it to the events table."""
     backend_lock.acquire()
     cursor = writedb.cursor()
-    #cursor.execute("""INSERT INTO events VALUES (%s, %s, %s, %s, %s);""", (time.strftime("%Y-%m-%dT%H:%M:%S"), event.source, event.target(), event.eventtype(), string.join(event.arguments())))
+    cursor.execute("""INSERT INTO events VALUES (%s, %s, %s, %s, %s);""", (time.strftime("%Y-%m-%dT%H:%M:%S"), event.source, event.target, event.command, event.arguments))
     writedb.commit()
     backend_lock.release()
 
