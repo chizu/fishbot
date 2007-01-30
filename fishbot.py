@@ -23,7 +23,7 @@ class Fishbot(protocols.ThreadClient):
 	"""An IRC bot that listens for commands and performs various functions on the channel."""
 	def __init__(self, servers):
 		#importer.debug = True # Importer debugging
-		fishapi.version = "Fishbot 3.0 Beta"
+		fishapi.version = "Fishbot 3.1 Alpha"
 		fishapi.execution_time = time.time()
 		fishapi.backend = backend
 		fishapi.fishbot = self
