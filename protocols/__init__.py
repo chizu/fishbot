@@ -3,9 +3,9 @@
 import threading, traceback
 
 def load():
+	"""On module load, find all the protocols available."""
 	import importer
 	from glob import glob
-	"""On module load, find all the protocols available."""
 	submodules = glob("protocols/*")
 	submodules.sort()
 	__all__ = set()
@@ -20,6 +20,7 @@ def load():
 		module = importer.__import__(name=each, path="protocols")
 
 class TriggerMissing(Exception):
+	"""No trigger registered for a given command."""
 	pass
 
 class TriggerManager(object):
@@ -55,15 +56,17 @@ class TriggerManager(object):
 			self.triggers[command].remove((function, args))
 
 class ClientThread(threading.Thread):
+	"""Thread object creation for server-client protocol threads."""
 	def __init__(self, server):
 		self.server = server
 		super(ClientThread, self).__init__()
 
 	def run(self):
+		"""Poll the server forever, until it disconnects."""
 		for each in self.server.poll(): pass
 		
-class ThreadClient(object):
-	"""Threaded server and protocol multiplexing."""
+class ThreadManager(object):
+	"""Threaded protocol multiplexing."""
 	def __init__(self, servers = {}):
 		self.servers = servers
 		self.threads = {}

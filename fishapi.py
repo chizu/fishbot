@@ -4,7 +4,7 @@ import importer, time
 import sys, os
 import urllib, re
 
-version = "Fishbot 3.0 - Beta"
+#version - set by main class
 #execution_time - set by main class
 #fishbot - set by main class
 
@@ -15,15 +15,6 @@ def getnick(s):
         return s[:n]
     else:
         return s
-
-def halt(message):
-    fishbot.disconnect(message)
-    sys.exit(0)
-
-def restart(message):
-    fishbot.disconnect(message)
-    os.execv(sys.argv[0], sys.argv[1:])
-    sys.exit(0)
 
 def http_grep(url, regexp):
     page = urllib.urlopen(url).readlines()

@@ -32,7 +32,8 @@ class Client(protocols.sock.Client):
 		self.message(to, "\01ACTION " + message + "\01")
 
 	def connect(self):
-		super(Client, self).connect()
+		"""Connect to IRC, mention nick name """
+		super(Client, self).connect() # Do the socket connection
 		self.nick(self.client_nick)
 		self.send("USER " + self.client_nick + " 0 * :" + self.realname)
 		self.triggers.register("PING", self.pong)

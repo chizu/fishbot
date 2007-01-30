@@ -19,7 +19,7 @@ import threading, time, os, sys, traceback, re
 import urllib
 urllib.URLopener.version = """Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.1b2) Gecko/20060906 Firefox/2.0b2"""
 
-class Fishbot(protocols.ThreadClient):
+class Fishbot(protocols.ThreadManager):
 	"""An IRC bot that listens for commands and performs various functions on the channel."""
 	def __init__(self, servers):
 		#importer.debug = True # Importer debugging
@@ -27,13 +27,13 @@ class Fishbot(protocols.ThreadClient):
 		fishapi.execution_time = time.time()
 		fishapi.backend = backend
 		fishapi.fishbot = self
-		protocols.irc.Client.triggers.register("CTCP", self.message)
-		protocols.irc.Client.triggers.register("JOIN", self.message)
-		protocols.irc.Client.triggers.register("NICK", self.message)
-		protocols.irc.Client.triggers.register("NOTICE", self.message)
-		protocols.irc.Client.triggers.register("PART", self.message)
-		protocols.irc.Client.triggers.register("PRIVMSG", self.message)
-		protocols.irc.Client.triggers.register("QUIT", self.message)
+		protocols.irc.Client.triggers.register("CTCP", self.messaged)
+		protocols.irc.Client.triggers.register("JOIN", self.messaged)
+		protocols.irc.Client.triggers.register("NICK", self.messaged)
+		protocols.irc.Client.triggers.register("NOTICE", self.messaged)
+		protocols.irc.Client.triggers.register("PART", self.messaged)
+		protocols.irc.Client.triggers.register("PRIVMSG", self.messaged)
+		protocols.irc.Client.triggers.register("QUIT", self.messaged)
 		protocols.irc.Client.triggers.register("INVITE", self.invited)
 		super(Fishbot, self).__init__(servers)
 
@@ -41,14 +41,10 @@ class Fishbot(protocols.ThreadClient):
 		"""Join a channel/room when invited."""
 		event.server.join(event.arguments)
 
-	def on_welcome(self, c, event):
-		"""Finished connecting event, join channels."""
-		self.join(c, event)
+	def messaged(self, event):
+		"""As messages occur, call the appropriate hooks in the plugins.
 
-	def message(self, event):
-		"""As events occur, call the appropriate hooks in the plugins.
-
-		Any server 'event' should call this method, this will log the event and execute the appropriate plugins."""
+		Any server message should call this method, this will execute the appropriate plugins."""
 		# Re-exec fishbot if fishbot itself has changed.
 		# This is disabled, it's slightly broken.
 		#if os.stat(sys.argv[0]).st_mtime > fishapi.execution_time:
@@ -62,10 +58,9 @@ class Fishbot(protocols.ThreadClient):
 			match = re.search(each, args)
 			if match:
 				name = str(plugins.expressions[each])
-				#print "Event: " + str(event)
-				#print "Plugin: " + name
-				print "-" * 10 + "MESSAGE: " + event.arguments
+				print "Expression: " + each
 				for each in plugins.expressions[each]:
+					print "Plugin: " + each
 					thread = plugins.PluginThread(each, (self, event))
 					thread.start()
 

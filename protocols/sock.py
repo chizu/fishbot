@@ -2,6 +2,7 @@
 import socket, protocols
 
 class Client(object):
+	"""Simple socket protocol, base class for protocols."""
 	triggers = protocols.TriggerManager()
 	def __init__(self, hostname, port, ssl=False):
 		self.hostname = hostname
@@ -11,6 +12,7 @@ class Client(object):
 		self.connect()
 
 	def connect(self):
+		"""Called to initialize the connection, might be called later to reconnect in case of failure."""
 		# We're using getaddrinfo for IPv6 support
 		sockinfo = socket.getaddrinfo(self.hostname, self.port)
 		for each in sockinfo:
@@ -26,25 +28,30 @@ class Client(object):
 			self.ssl = False
 
 	def disconnect(self):
+		"""Called to disconnect, may be called multiple times in case of reconnecting."""
 		if self.ssl:
 			del(self.ssl)
 		self.sock.close()
 		del(self.sock)
 
 	def poll(self):
-		pass
+		"""Generator for polling server events. This will be called as often as it yields, and will exit upon returning."""
+		return
 	
 	def reconnect(self):
+		"""Called to reconnect in case of failure or reloading."""
 		self.disconnect()
 		self.connect()
 
 	def recv(self):
+		"""Called to retrieve raw data from the socket."""
 		if self.ssl:
 			return self.ssl.read()
 		else:
 			return self.sock.recv(1024)
 
 	def send(self, string):
+		"""Called to send raw data out the socket."""
 		if self.ssl:
 			length = self.ssl.write(string)
 		else:
