@@ -49,7 +49,8 @@ def bang(self, event):
 						if isinstance(pubmsg, (list, tuple)):
 							for each in pubmsg:
 								for each in each.split('\n'):
-									event.server.message(respond, each)
+									if each != '':
+										event.server.message(respond, each)
 						else:
 							event.server.message(respond, pubmsg)
 					elif pubmsg:
