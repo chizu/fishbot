@@ -77,6 +77,7 @@ class Fishbot(protocols.ThreadManager):
 		return respond
 
 def main():
+	import protocols.irc
 	bot = Fishbot({"chshackers":protocols.irc.Client(nick="Fishbot", realname="Fishbot", hostname="grandpa.chshackers.com", port=6667)})
 	bot.servers["chshackers"].join("#chshackers")
 	bot.servers["chshackers"].join("#mmo-dev")
