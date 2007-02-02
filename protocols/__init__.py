@@ -15,9 +15,9 @@ def load():
 	__all__.remove('__init__')
 	__all__ = list(__all__)
 	__all__.sort()
-
-	for each in __all__:
-		module = importer.__import__(name=each, path="protocols")
+	
+#	for each in __all__:
+#		module = importer.__import__(name=each, path="protocols")
 
 class TriggerMissing(Exception):
 	"""No trigger registered for a given command."""

@@ -1,7 +1,7 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 """Example Fishbot script."""
 from fishbot import Fishbot
-import protocols
+import protocols.irc
 
 def oper(server, username, password):
 	server.oper(username, password)

@@ -1,9 +1,12 @@
 #!/usr/bin/env python
-import socket, protocols
+import socket
+import protocols.generic
 
-class Client(object):
-	"""Simple socket protocol, base class for protocols."""
-	triggers = protocols.TriggerManager()
+class SocketEvent(protocols.generic.Event):
+	pass
+
+class Client(protocols.generic.Client):
+	"""Simple socket protocol, base class for socket based protocols."""
 	def __init__(self, hostname, port, ssl=False):
 		self.hostname = hostname
 		self.port = port

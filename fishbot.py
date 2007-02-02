@@ -58,9 +58,9 @@ class Fishbot(protocols.ThreadManager):
 			match = re.search(each, args)
 			if match:
 				name = str(plugins.expressions[each])
-				print "Expression: " + each
+				print "Expression: " + str(each)
 				for each in plugins.expressions[each]:
-					print "Plugin: " + each
+					print "Plugin: " + str(each)
 					thread = plugins.PluginThread(each, (self, event))
 					thread.start()
 

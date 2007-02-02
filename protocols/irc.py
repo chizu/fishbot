@@ -1,30 +1,30 @@
 #!/usr/bin/env python
 """Multiple server IRC protocol support."""
 import protocols.sock
-import datetime
 
-class IRCEvent(object):
-	def __init__(self, server, prefix, command, params, timestamp=None):
-		self.server = server
-		self.nick = server.client_nick
-		self.source = prefix
-		self.command = command
-		self.params = params
-		self.target = self.params[0]
-		self.arguments = " ".join(self.params[1:])
-		if timestamp is None:
-			self.timestamp = datetime.datetime.now()
-		else:
-			self.timestamp = timestamp
+def Property(function):
+	import sys
+	keys = 'fget', 'fset', 'fdel'
+	func_locals = {'doc':function.__doc__}
+	def probeFunc(frame, event, arg):
+		if event == 'return':
+			locals = frame.f_locals
+			func_locals.update(dict((k,locals.get(k)) for k in keys))
+			sys.settrace(None)
+		return probeFunc
+	sys.settrace(probeFunc)
+	function()
+	return property(**func_locals)
+
+class IRCEvent(protocols.sock.SocketEvent):
+	pass
 		
-	def __str__(self):
-		return "%s %s || %s %s %s" % (':'.join((self.server.hostname, str(self.server.port))), self.timestamp, self.source, self.command, self.arguments)
-
 class Client(protocols.sock.Client):
-	triggers = protocols.TriggerManager()
 	"""IRC server client interface."""
+	triggers = protocols.TriggerManager()
+	protocol = "IRC"
 	def __init__(self, nick, realname, hostname, port, ssl=False):
-		self.client_nick = nick
+		self._nick = nick
 		self.realname = realname
 		super(Client, self).__init__(hostname, port, ssl)
 
@@ -34,12 +34,12 @@ class Client(protocols.sock.Client):
 	def connect(self):
 		"""Connect to IRC, mention nick name """
 		super(Client, self).connect() # Do the socket connection
-		self.nick(self.client_nick)
-		self.send("USER " + self.client_nick + " 0 * :" + self.realname)
+		self.nick = self._nick
+		self.send("USER " + self.nick + " 0 * :" + self.realname)
 		self.triggers.register("PING", self.pong)
 		self.triggers.register("433", self.nickinuse)
 
-	def disconnect(self, reason):
+	def disconnect(self, reason=""):
 		self.send("QUIT :" + reason)
 		super(Client, self).disconnect()
 
@@ -56,14 +56,19 @@ class Client(protocols.sock.Client):
 
 	def message(self, to, message):
 		self.send("PRIVMSG " + to + " :" + message + "\n")
-	
-	def nick(self, nick):
+
+	@Property
+	def nick():
 		"""Set the nickname."""
-		self.send("NICK " + nick)
+		def fget(self):
+			return self._nick
+		def fset(self, nick):
+			self.send("NICK " + nick)
+			self._nick = nick
 
 	def nickinuse(self, event):
-		self.client_nick += "_"
-		self.nick(self.client_nick)
+		self._nick += "_"
+		self.nick = self._nick
 
 	def oper(self, username, password):
 		self.send("OPER " + username + " " + password)
@@ -89,6 +94,7 @@ class Client(protocols.sock.Client):
 			for line in lines:
 				# Some of RFC 2812 parser
 				line = line.strip()
+				print line
 				if line[0] is ':':
 					(prefix, command, params) = line[1:].split(" ", 2)
 				else:
@@ -99,7 +105,7 @@ class Client(protocols.sock.Client):
 					params = [x.strip() for x in params[0].split()] + [params[1]]
 				else:
 					params = [x.strip() for x in params[0].split()]
-				event = IRCEvent(self, prefix, command, params)
+				event = IRCEvent(self, prefix, params[0], command, params[1:])
 				try:
 					self.triggers.trigger(event.command, event)
 				except protocols.TriggerMissing:
@@ -113,5 +119,5 @@ class Client(protocols.sock.Client):
 
 	def send(self, string):
 		"""IRC commands are terminated by a newline."""
+		print "Sending:", string
 		super(Client, self).send(string + "\n")
-
