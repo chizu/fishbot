@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """Fishbot 3 - The movie!
 
-Now in technicolor. Actually now rewritten for modularity and more extensability. This release brings a way for Fishbot to keep data between sessions mostly.
+Now in technicolor. Actually now rewritten for modularity and more extensability.
 
 Fishbot is distributed under the GNU General Public License Version 2.0.
 """

@@ -6,7 +6,6 @@ import urllib, re
 
 #version - set by main class
 #execution_time - set by main class
-#fishbot - set by main class
 
 def getnick(s):
     """Return an IRC nick from an IRC hostmask"""
@@ -22,6 +21,3 @@ def http_grep(url, regexp):
         search = re.search(regexp, each, re.M)
         if search:
             return search.groups()
-
-def say(to, message):
-    fishbot.say(to, message)
