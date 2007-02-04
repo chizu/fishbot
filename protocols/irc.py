@@ -33,7 +33,7 @@ class Client(protocols.sock.Client):
 		self.triggers.alias("NICK", "message")
 		self.triggers.alias("NOTICE", "message")
 		self.triggers.alias("PART", "message")
-		self.triggers.alias("PRIVMSG", "message"
+		self.triggers.alias("PRIVMSG", "message")
 		self.triggers.alias("QUIT", "message")
 		self.triggers.alias("INVITE", "invite")
 		super(Client, self).__init__(hostname, port, ssl)
