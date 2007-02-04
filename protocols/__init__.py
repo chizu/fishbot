@@ -27,6 +27,7 @@ class TriggerManager(object):
 	"""Manage triggers for protocol events."""
 	def __init__(self, parent=None):
 		self.triggers = {}
+		self.aliases = {}
 		self.parent = parent
 
 	def register(self, command, function, args=()):
@@ -50,7 +51,7 @@ class TriggerManager(object):
 					each[0](args)
 		else:
 			if self.aliases.has_key(command):
-				self.trigger(aliases[command], args)
+				self.trigger(self.aliases[command], args)
 			else:
 				if self.parent:
 					self.parent.trigger(command, args)

@@ -27,8 +27,8 @@ class Fishbot(protocols.ThreadManager):
 		fishapi.execution_time = time.time()
 		fishapi.backend = backend
 		fishapi.fishbot = self
-		protocols.generic.Client.tirggers.register("message", self.messaged)
-		protocols.generic.Client.tirggers.register("invite", self.invited)
+		protocols.generic.Client.triggers.register("message", self.messaged)
+		protocols.generic.Client.triggers.register("invite", self.invited)
 		super(Fishbot, self).__init__(servers)
 
 	def invited(self, event):
