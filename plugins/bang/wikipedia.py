@@ -6,4 +6,4 @@ import plugins.bang.google
 
 def bang(pipein, arguments, event):
 	search = pipein or arguments
-	return google.bang("site:en.wikipedia.org " + search, "", event)
+	return plugins.bang.google.bang("site:en.wikipedia.org " + search, "", event)
