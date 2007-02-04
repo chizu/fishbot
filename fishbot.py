@@ -27,14 +27,8 @@ class Fishbot(protocols.ThreadManager):
 		fishapi.execution_time = time.time()
 		fishapi.backend = backend
 		fishapi.fishbot = self
-		protocols.irc.Client.triggers.register("CTCP", self.messaged)
-		protocols.irc.Client.triggers.register("JOIN", self.messaged)
-		protocols.irc.Client.triggers.register("NICK", self.messaged)
-		protocols.irc.Client.triggers.register("NOTICE", self.messaged)
-		protocols.irc.Client.triggers.register("PART", self.messaged)
-		protocols.irc.Client.triggers.register("PRIVMSG", self.messaged)
-		protocols.irc.Client.triggers.register("QUIT", self.messaged)
-		protocols.irc.Client.triggers.register("INVITE", self.invited)
+		protocols.generic.Client.tirggers.register("message", self.messaged)
+		protocols.generic.Client.tirggers.register("invite", self.invited)
 		super(Fishbot, self).__init__(servers)
 
 	def invited(self, event):

@@ -21,11 +21,21 @@ class IRCEvent(protocols.sock.SocketEvent):
 		
 class Client(protocols.sock.Client):
 	"""IRC server client interface."""
-	triggers = protocols.TriggerManager()
+	triggers = protocols.TriggerManager(protocols.sock.Client.triggers)
 	protocol = "IRC"
 	def __init__(self, nick, realname, hostname, port, ssl=False):
 		self._nick = nick
 		self.realname = realname
+		self.triggers.register("PING", self.pong)
+		self.triggers.register("433", self.nickinuse)
+		self.triggers.alias("CTCP", "message")
+		self.triggers.alias("JOIN", "message")
+		self.triggers.alias("NICK", "message")
+		self.triggers.alias("NOTICE", "message")
+		self.triggers.alias("PART", "message")
+		self.triggers.alias("PRIVMSG", "message"
+		self.triggers.alias("QUIT", "message")
+		self.triggers.alias("INVITE", "invite")
 		super(Client, self).__init__(hostname, port, ssl)
 
 	def action(self, to, message):
@@ -36,8 +46,6 @@ class Client(protocols.sock.Client):
 		super(Client, self).connect() # Do the socket connection
 		self.nick = self._nick
 		self.send("USER " + self.nick + " 0 * :" + self.realname)
-		self.triggers.register("PING", self.pong)
-		self.triggers.register("433", self.nickinuse)
 
 	def disconnect(self, reason=""):
 		self.send("QUIT :" + reason)

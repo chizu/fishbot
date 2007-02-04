@@ -7,6 +7,7 @@ class SocketEvent(protocols.generic.Event):
 
 class Client(protocols.generic.Client):
 	"""Simple socket protocol, base class for socket based protocols."""
+	triggers = protocols.TriggerManager(protocols.generic.Client.triggers)
 	def __init__(self, hostname, port, ssl=False):
 		self.hostname = hostname
 		self.port = port

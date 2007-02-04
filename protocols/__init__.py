@@ -36,6 +36,10 @@ class TriggerManager(object):
 		else:
 			self.triggers[command] = [(function, args),]
 
+	def alias(self, alias, command):
+		"""Alias one command to another."""
+		self.aliases[alias] = command
+
 	def trigger(self, command, args):
 		"""Execute a command."""
 		if self.triggers.has_key(command):
@@ -45,10 +49,13 @@ class TriggerManager(object):
 				else:
 					each[0](args)
 		else:
-			if self.parent:
-				self.parent.trigger(command, args)
+			if self.aliases.has_key(command):
+				self.trigger(aliases[command], args)
 			else:
-				raise TriggerMissing("No trigger registered to '%s'." % command)
+				if self.parent:
+					self.parent.trigger(command, args)
+				else:
+					raise TriggerMissing("No trigger registered to '%s'." % command)
 
 	def unregister(self, command, function, args=()):
 		"""Remove a function from a command."""
