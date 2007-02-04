@@ -63,5 +63,4 @@ class Client(protocols.generic.Client):
 		if length == len(string):
 			return 
 		else:
-			print length
 			raise socket.error("Sending data failed.")

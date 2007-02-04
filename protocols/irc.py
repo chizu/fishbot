@@ -102,7 +102,6 @@ class Client(protocols.sock.Client):
 			for line in lines:
 				# Some of RFC 2812 parser
 				line = line.strip()
-				print line
 				if line[0] is ':':
 					(prefix, command, params) = line[1:].split(" ", 2)
 				else:
