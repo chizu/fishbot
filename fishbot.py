@@ -53,9 +53,9 @@ class Fishbot(protocols.ThreadManager):
 		#	os.execv(sys.argv[0], sys.argv[1:])
 		# Execute the plugin tree as required.
 		plugins = importer.__import__("plugins")
-		args = event.arguments
+		print "Event: " + str(event)
 		for each in sorted(plugins.expressions):
-			match = re.search(each, args)
+			match = re.search(each, event.arguments)
 			if match:
 				name = str(plugins.expressions[each])
 				print "Expression: " + str(each)
