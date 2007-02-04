@@ -1,7 +1,7 @@
 #!/usr/bin/python
 def questions(self, event):
     import random
-    if event.arguments.startswith(event.nick) or event.target.startswith(event.nick):
+    if event.arguments.startswith(event.server.nick) or event.target.startswith(event.server.nick):
         responses = [
             # Standard eight ball
             "Signs point to yes.",
