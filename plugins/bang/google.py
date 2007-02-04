@@ -1,6 +1,6 @@
 #!/usr/bin/python
 """!google - Fishbot google search"""
-import urllib, re, fishapi
+import re, fishapi
 
 def bang(pipein, arguments, event):
 	search = pipein or arguments
