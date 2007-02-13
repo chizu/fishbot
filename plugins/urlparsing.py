@@ -69,7 +69,7 @@ def urlmatcher(self, event):
 				if hasattr(result, "group"):
 					output += "Torrent Name: " + result.group(1)
 			else:
-				output += "Content Type: " + (resource.info().getheader('Content-Type') or "b0rked webserver"))
+				output += "Content Type: " + (resource.info().getheader('Content-Type') or "b0rked webserver")
 			resource.close()
 			return
 		try:
