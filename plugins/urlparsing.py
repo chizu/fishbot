@@ -10,7 +10,7 @@
     Fishbot plugin - Nell Hardcastle <chizu@spicious.com> 2006-03-14
 """
 
-import re
+import re, fishapi
 
 pattern = r"""
 ( ( \w | - | % )+ @  #  email address prefix (e.g. "glyn@")
@@ -79,6 +79,13 @@ def urlmatcher(self, event):
                 if re.compile("\<title.*\>(.*)\<\/title\>",re.I).search(each):
                     match = re.search("\<title.*\>(.*)\<\/title\>",each,re.I)
                     event.server.say(respond, "Malformed XML, Title: " + match.group(1))
+
+		if len(regular(m.group())) > 40:
+			# Creates a tinyurl out of a long url
+			url = "http://tinyurl.com/create.php?url=" + regular(m.group())
+			tiny = fishapi.http_grep(url, """<blockquote>.*?href="(http://tinyurl.com/[^\"]+)""")
+			event.server.say(respond, "Your tiny URL is: " + tiny[0])
+			
         resource.close()
         return
 
