@@ -82,12 +82,6 @@ def urlmatcher(self, event):
 					match = re.search("\<title.*\>(.*)\<\/title\>",each,re.I)
 					output += "Malformed XML, Title: " + match.group(1)
 
-		if len(regular(m.group())) > 40:
-			# Creates a tinyurl out of a long url
-			url = "http://tinyurl.com/create.php?url=" + regular(m.group())
-			tiny = fishapi.http_grep(url, """<blockquote>.*?href="(http://tinyurl.com/[^\"]+)""")
-			output += ", TinyURL: " + tiny[0]
-
 		if output:
 			event.server.say(respond, output)
 
