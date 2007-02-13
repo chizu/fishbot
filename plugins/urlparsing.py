@@ -8,6 +8,7 @@
 
     Original version - Glyn Webster <glyn@ninz.org.nz> 1999-04-27
     Fishbot plugin - Nell Hardcastle <chizu@spicious.com> 2006-03-14
+	Tinyurl code - Edward Lim <limed@onid.orst.edu>
 """
 
 import re, fishapi
@@ -53,6 +54,7 @@ def urlmatcher(self, event):
 	import re,urllib,string
 	import xml.dom.minidom, xml.parsers.expat
 
+	output = ""
 	m = regex.search(event.arguments)
 	respond = self.respond_to(event.source, event.target)
 	if m:
@@ -65,27 +67,30 @@ def urlmatcher(self, event):
 				torrent = resource.readlines()
 				result = re.search("name[0-9]*?:(.*?)12:",torrent[0])
 				if hasattr(result, "group"):
-					event.server.say(respond, "Torrent Name: " + result.group(1))
+					output += "Torrent Name: " + result.group(1)
 			else:
-				event.server.say(respond, "Content Type: " + (resource.info().getheader('Content-Type') or "b0rked webserver"))
+				output += "Content Type: " + (resource.info().getheader('Content-Type') or "b0rked webserver"))
 			resource.close()
 			return
 		try:
 			xhtml = resource.readlines()
 			dom = xml.dom.minidom.parseString(string.join(xhtml))
-			event.server.say(respond, "XHTML, Title: " + getText(dom.getElementsByTagName("title")[0].childNodes))
+			output += "XHTML, Title: " + getText(dom.getElementsByTagName("title")[0].childNodes))
 		except xml.parsers.expat.ExpatError:
 			for each in xhtml:
 				if re.compile("\<title.*\>(.*)\<\/title\>",re.I).search(each):
 					match = re.search("\<title.*\>(.*)\<\/title\>",each,re.I)
-					event.server.say(respond, "Malformed XML, Title: " + match.group(1))
+					output += "Malformed XML, Title: " + match.group(1)
 
 		if len(regular(m.group())) > 40:
 			# Creates a tinyurl out of a long url
 			url = "http://tinyurl.com/create.php?url=" + regular(m.group())
 			tiny = fishapi.http_grep(url, """<blockquote>.*?href="(http://tinyurl.com/[^\"]+)""")
-			event.server.say(respond, "Your tiny URL is: " + tiny[0])
-			
+			output += ", TinyURL: " + tiny[0]
+
+		if output:
+			event.server.say(respond, output)
+
 		resource.close()
 		return
 
