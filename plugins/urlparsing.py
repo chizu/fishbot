@@ -75,7 +75,7 @@ def urlmatcher(self, event):
 		try:
 			xhtml = resource.readlines()
 			dom = xml.dom.minidom.parseString(string.join(xhtml))
-			output += "XHTML, Title: " + getText(dom.getElementsByTagName("title")[0].childNodes))
+			output += "XHTML, Title: " + getText(dom.getElementsByTagName("title")[0].childNodes)
 		except xml.parsers.expat.ExpatError:
 			for each in xhtml:
 				if re.compile("\<title.*\>(.*)\<\/title\>",re.I).search(each):
