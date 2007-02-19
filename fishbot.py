@@ -15,10 +15,6 @@ import importer
 # Python builtins
 import threading, time, os, sys, traceback, re
 
-# Set a user agent in case later code attempts to use urllib
-import urllib
-urllib.URLopener.version = """Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.1b2) Gecko/20060906 Firefox/2.0b2"""
-
 class Fishbot(protocols.ThreadManager):
 	"""An IRC bot that listens for commands and performs various functions on the channel."""
 	def __init__(self, servers):

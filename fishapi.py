@@ -8,6 +8,9 @@ import chesterfield
 #version - string set by main class
 #execution_time - time set by main class
 
+# Set a user agent in case later code attempts to use urllib
+urllib.URLopener.version = """Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.1b2) Gecko/20060906 Firefox/2.0b2"""
+
 def getnick(s):
 	"""Return an IRC nick from an IRC hostmask"""
 	n = s.find("!")
