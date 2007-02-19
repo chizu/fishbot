@@ -28,7 +28,7 @@ def http_grep(url, regexp):
 
 # Chesterfield derived objects
 database = chesterfield.Chesterfield(user='fishbot', host='localhost', database='fishbot')
-DatabaseObject = database.DatabaseObject
+DatabaseObject = database.object
 #ReadOnlyDatabaseObject = chesterfield.DatabaseObject(user='fishbotread', host='localhost', database='fishbot')
 
 class Counter(DatabaseObject):
