@@ -5,7 +5,7 @@ con = psycopg2.connect(user='fishbotread', host='localhost', database='fishbot')
 
 def bang(pipein, arguments, event):
 	query = arguments or pipein
-	cur = con.cur()
+	cur = con.cursor()
 	try:
 		cur.execute(query)
 		cur.connection.commit()
