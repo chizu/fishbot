@@ -8,7 +8,7 @@ def oper(server, username, password):
 
 bot = Fishbot({
 	"chshackers":protocols.irc.Client(nick="testdummy",
-					  realname="Fishbot-ed",
+					  realname="Fishbot-Kev",
 					  hostname="grandpa.chshackers.com",
 					  port=6667),
 	"mail":protocols.mail.ForwardClient(emailaddr="irc@spicious.com",
@@ -19,5 +19,5 @@ bot = Fishbot({
 					    tick=10)
 	})
 bot.servers["chshackers"].join("#test")
-bot.servers["mail"].attach(bot.servers["chshackers"], ("#test"))
+bot.servers["mail"].attach(bot.servers["chshackers"], ["#test"])
 bot.start()

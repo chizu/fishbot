@@ -21,7 +21,7 @@ class Client(generic.Client):
         self.mailc = None
         self.server = None
         self.tick = tick
-        self.triggers.alias("incoming", self.incoming)
+        self.triggers.register("incoming", self.incoming)
         self.connect()
         
 
@@ -32,13 +32,17 @@ class Client(generic.Client):
             else:
                 self.mailc = imaplib.IMAP4(self.host, self.port)
   
-            self.mailc.login(self.username, self.password)
-            self.mailc.select()
-            self.connected = True
+            if self.mailc.login(self.username, self.password)[0] == 'OK':
+                self.mailc.select()
+                self.connected = True
+            else:
+                self.mailc.logout()
+                del(self.mailc)
         
     def disconnect(self):
         if self.connected:
             self.mailc.logout()
+            del(self.mailc)
             self.connected = False
 
     def message(self, to, message, event):
@@ -50,16 +54,20 @@ class Client(generic.Client):
 
     def poll(self):
         import time
-        time.sleep(self.tick)
-        if self.connected:
-            typ, newmessages = self.mailc.search(None, 'NEW')
-            newmessages = newmessages[0].split()
-            for mno in newmessages:
-                typ, data = self.mailc.fetch(mno, '(BODY[HEADER.FIELDS (SUBJECT FROM)] BODY[TEXT])')
-                headers = data[0][1].split("\r\n")
-                event = MailEvent(self, headers[0], headers[1], 'incoming', data[1])
-                self.triggers.trigger(event.command, event)
-                yield None
+        while 1:
+            time.sleep(self.tick)
+            if self.connected:
+                print "Checking for new messages"
+                if self.mailc.recent() != None:
+                    typ, newmessages = self.mailc.search(None, 'UNSEEN')
+                    print newmessages
+                    newmessages = newmessages[0].split()
+                    for mno in newmessages:
+                        typ, data = self.mailc.fetch(mno, '(BODY[HEADER.FIELDS (SUBJECT FROM)] BODY[TEXT])')
+                        headers = data[0][1].split("\r\n")
+                        event = MailEvent(self, headers[0], headers[1], 'incoming', data[1])
+                        self.triggers.trigger(event.command, event)
+                        yield None
 
 
 class ForwardClient(Client):
@@ -85,10 +93,10 @@ class ForwardClient(Client):
 
         out += "New Message " + fromName + "\n"
         out += event.target + "\n"
-        out += event.params
+        out += event.params[1]
 
         if self.server != None and self.channels != None:
-            for channel in channels:
+            for channel in self.channels:
                 self.server.say(channel, out)
 
         
