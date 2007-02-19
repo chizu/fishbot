@@ -1,4 +1,5 @@
 #!/usr/bin/python
+"""!sql - Readonly SQL queries on the Fishbot database."""
 import sys,string
 import psycopg2
 con = psycopg2.connect(user='fishbotread', host='localhost', database='fishbot')
