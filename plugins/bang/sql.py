@@ -9,7 +9,7 @@ def bang(pipein, arguments, event):
 	try:
 		cur.execute(query)
 		cur.connection.commit()
-		results = cursor.fetchall()
+		results = cur.fetchall()
 		cur.close()
 		if len(results) > 6:
 			return ("Query returned %s rows." % len(results), None)
