@@ -82,7 +82,7 @@ class Client(protocols.sock.Client):
 		self.send("OPER " + username + " " + password)
 
 	def pong(self, event):
-		self.send("PONG " + event.arguments)
+		self.send("PONG " + event.target)
 
 	def poll(self):
 		nextline = ''
