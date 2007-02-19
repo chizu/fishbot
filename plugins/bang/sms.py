@@ -55,7 +55,7 @@ def timeout():
     t = Timer(10.0, timeout)
     t.start()
 
-timeout()
+#timeout()
 
 def bang(pipein, arguments, event):
     import smtplib
