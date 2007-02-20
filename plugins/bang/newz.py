@@ -1,5 +1,7 @@
 #!/usr/bin/env python
-"""NewzBin search for fishbot"""
+"""NewzBin search for fishbot:
+!newz [-n <num>] search
+Where num is the number of results to return."""
 
 def bang(pipein, arguments, event):
     import newzlib
