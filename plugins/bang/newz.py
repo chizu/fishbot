@@ -9,7 +9,7 @@ def bang(pipein, arguments, event):
     arguments = arguments.split()
     
     if arguments[0] == '-n':
-        num = str(arguments[1])
+        num = int(arguments[1])
         if num > 10:
             num = 10
         search = ' '.join(arguments[2:])
@@ -22,8 +22,6 @@ def bang(pipein, arguments, event):
     res = nz.search(search)
 
     out = []
-
-    print "newz.py: Processing: " + str(num) + " results."
 
     for line in res[:num]:
         out.append(line[2] + ': ' + line[3])
