@@ -26,6 +26,6 @@ def bang(pipein, arguments, event):
     for line in res[:num]:
         out += line[2] + ': ' + line[3] + "\n"
 
-    out.rstrip()
+    out = out.rstrip()
 
     return(out, None)
