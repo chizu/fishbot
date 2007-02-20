@@ -21,11 +21,9 @@ def bang(pipein, arguments, event):
 
     res = nz.search(search)
 
-    out = ""
+    out = []
 
     for line in res[:num]:
-        out += line[2] + ': ' + line[3] + "\n"
-
-    out = out.rstrip()
+        out.append(line[2] + ': ' + line[3])
 
     return(out, None)
