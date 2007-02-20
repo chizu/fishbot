@@ -14,6 +14,7 @@ def bang(pipein, arguments, event):
             num = 10
         search = ' '.join(arguments[2:])
     else:
+        num = 2
         search = ' '.join(arguments)
 
     nz = newzlib.Newz()
