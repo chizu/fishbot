@@ -8,7 +8,7 @@ def bang(pipein, arguments, event):
     
     arguments = arguments.split()
 
-    if arguments[0] = '-n':
+    if arguments[0] == '-n':
         num = str(arguments[1])
         if num > 10:
             num = 10
