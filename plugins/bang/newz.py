@@ -33,4 +33,4 @@ def bang(pipein, arguments, event):
             out.append(line[2] + ': ' + line[3])
 
         return(out, None)
-    return('No results')
+    return('No results', None)
