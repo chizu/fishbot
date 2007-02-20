@@ -1,0 +1,28 @@
+#!/usr/bin/env python
+"""NewzBin search for fishbot"""
+
+def bang(pipein, arguments, event):
+    import newzlib
+    
+    arguments = arguments.split()
+
+    if arguments[0] = '-n':
+        num = str(arguments[1])
+        if num > 10:
+            num = 10
+        search = ' '.join(arguments[2:])
+    else:
+        search = ' '.join(arguments)
+
+    nz = newzlib.Newz()
+
+    res = nz.search(search)
+
+    out = ""
+
+    for line in res[:num]:
+        out += line[2] + ': ' + line[3] + "\n"
+
+    out.rstrip()
+
+    return(out, None)
