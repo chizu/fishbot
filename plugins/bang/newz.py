@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """NewzBin search for fishbot:
-!newz [-n <num>] search
-Where num is the number of results to return."""
+!newz [-n <num>] [-c <cat>] search
+Where num is the number of results to return, and cat is a newzbin category."""
 
 def bang(pipein, arguments, event):
     import newzlib
@@ -12,14 +12,20 @@ def bang(pipein, arguments, event):
         num = int(arguments[1])
         if num > 10:
             num = 10
-        search = ' '.join(arguments[2:])
+        arguments = arguments[2:]
     else:
         num = 2
-        search = ' '.join(arguments)
 
+    if arguments[0] == '-c':
+        cat = arguments[1]
+        arguments = arguments[2:]
+    else:
+        cat = 'all'
+
+    search = ' '.join(arguments)
     nz = newzlib.Newz()
 
-    res = nz.search(search)
+    res = nz.search(search, category=cat)
 
     out = []
 
