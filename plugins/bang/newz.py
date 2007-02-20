@@ -26,11 +26,12 @@ def bang(pipein, arguments, event):
     nz = newzlib.Newz()
 
     res = nz.search(search, category=cat)
-    if len(res) > 0:
+    if res:
         out = []
 
         for line in res[:num]:
             out.append(line[2] + ': ' + line[3])
 
         return(out, None)
-    return('No results', None)
+    else:
+        return('No results', None)
