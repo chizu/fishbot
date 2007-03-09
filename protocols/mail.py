@@ -1,6 +1,11 @@
 #!/usr/bin/env python
 """Simple SMS/Email interface client."""
 import generic, imaplib, datetime
+import backend
+class address(backend.DatabaseObject):
+       name = ""
+       address = ""
+       __namespace__ = ""
 
 class MailEvent(generic.Event):
     """Mail or SMS event."""
@@ -23,7 +28,7 @@ class Client(generic.Client):
         self.tick = tick
         self.triggers.register("incoming", self.incoming)
         self.connect()
-        
+
 
     def connect(self):
         if not self.connected:
@@ -79,11 +84,7 @@ class ForwardClient(Client):
 
 
     def incoming(self, event):
-        import backend
         out = ""
-        class address(backend.DatabaseObject):
-            name = ""
-            address = ""
 
         inAb = address(-1, address=event.source.split()[1])
         if inAb:
