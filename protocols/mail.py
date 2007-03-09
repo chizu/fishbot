@@ -57,10 +57,10 @@ class Client(generic.Client):
         while 1:
             time.sleep(self.tick)
             if self.connected:
-                print "Checking for new messages"
                 if self.mailc.recent() != None:
                     typ, newmessages = self.mailc.search(None, 'UNSEEN')
-                    print newmessages
+					if newmessages:
+						print "New mail messages."
                     newmessages = newmessages[0].split()
                     for mno in newmessages:
                         typ, data = self.mailc.fetch(mno, '(BODY[HEADER.FIELDS (SUBJECT FROM)] BODY[TEXT])')
