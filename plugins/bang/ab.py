@@ -15,23 +15,23 @@ def bang(pipein, arguments, event):
 	arguments = arguments.split()
 
 	if arguments[0] == 'add' and len(arguments) == 3:
-		addr = address(-1, name = arguments[1], __namespace__ = event.channel)
+		addr = address(-1, name = arguments[1], __namespace__ = event.target)
 
 		if len(addr) > 0:
 			outstr = "Replacing " + addr.name
 		else:
 			outstr = "Added"
-		addr = address(name = arguments[1], address = arguments[2], __namespace__ = event.channel)
+		addr = address(name = arguments[1], address = arguments[2], __namespace__ = event.target)
 		return(outstr, None)
 
 	elif (arguments[0] == 'find' and len(arguments) == 2) or arguments[0] == 'list':
 		outstr = []
 		
 		if arguments[0] == 'find':
-			addrs = address(-1, name = arguments[1], __namespace__ = event.channel)
+			addrs = address(-1, name = arguments[1], __namespace__ = event.target)
 			# + address(-1, address = arguments[1])
 		else:
-			addrs = address(-1, __namespace__ = event.channel)
+			addrs = address(-1, __namespace__ = event.target)
 
 		for each in addrs:
 			outstr.append("[" + str(each.id) + "] "+ each.name + " - " + each.address)
@@ -39,7 +39,7 @@ def bang(pipein, arguments, event):
 		return(outstr, None)
 
 	elif (arguments[0] == 'remove' or arguments[0] == 'delete' or arguments[0] == 'rm'):
-		addr = address(-1, name = arguments[1], __namespace__ = event.channel)
+		addr = address(-1, name = arguments[1], __namespace__ = event.target)
 		if len(addr) > 0:
 			addr.drop()
 			return ("Removing " + addr.name, None)
