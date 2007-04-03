@@ -8,14 +8,12 @@ del <num> - delete message number <num>
 to <address> <message> - send an sms to <address>"""
 
 import imaplib,backend
-from threading import Timer
-
-announce = "#chshackers"
 
 class address(backend.DatabaseObject):
     name = ""
     address = ""
-
+    __namespace__ = ""
+    
 def login():
     server = 'spicious.com'       #options for the script: mail server
     port = 993                    # port (this is for SSL)
@@ -27,36 +25,6 @@ def login():
     mc.select()
     return mc
 
-def timeout():
-    outstr = []
-    mc = login()
-    typ, newmessages = mc.search(None, 'NEW')
-    newmessages = newmessages[0].split()
-    if len(newmessages) > 0:
-        outstr.append("New SMS Arrived:")
-        for mno in newmessages:
-            typ, data = mc.fetch(mno, '(BODY[HEADER.FIELDS (SUBJECT FROM)] BODY[TEXT])')
-            headers = data[0][1].split("\r\n")
-            inAb = address(-1, address=headers[0].split()[1])
-            if inAb:
-                fromName = "From: " + inAb.name
-            else:
-                fromName = headers[0]
-            outstr.append(fromName + "\n")
-            outstr.append(headers[1])
-            # Filter out footers, then split on newlines
-            body = "\r\n".join(data[1][1].split("\r\n--\r\n")[:-1]).split("\r\n")
-            for line in body:
-                outstr.append(line)
-
-        outstr = "\n".join(outstr)        
-        event.server.say(announce, outstr)
-    
-    t = Timer(10.0, timeout)
-    t.start()
-
-#timeout()
-
 def bang(pipein, arguments, event):
     import smtplib
 
@@ -67,7 +35,6 @@ def bang(pipein, arguments, event):
 
     if len(arguments) < 1:
         return("Please pass a command to !sms: list", None)
-
 
     if arguments[0] == 'list':
         outstr = []
