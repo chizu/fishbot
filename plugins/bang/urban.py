@@ -10,9 +10,9 @@ def bang(pipein, arguments, event):
 
     if len(urban) > 1:
         if(len(urban[0].definition) < 256):
-            return (arguments + ": " + urban[0].definition)
+            return (arguments + ": " + urban[0].definition + "\n", None)
         else:
-            return (urban[0].url)
+            return (urban[0].url, None)
 
-    return ("Could not find a definition for " + arguments)
+    return ("Could not find a definition for " + arguments + "\n", None)
     
