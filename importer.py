@@ -1,6 +1,12 @@
+"""Custom importing system
+
+__import__ here works like the builtin __import__, but will destroy any implicit references to the old code in sys.modules and reload the code if it has changed on disk.
+
+This is error prone, if a third party module executing under the same interpreter imports the module that was pulled in with this __import__, removing it from sys could have undesirable effects. Use this __import__ function with caution."""
 import __builtin__
 import sys,os
 
+# Set this to True to see what kind of import operations are actually done
 debug = False
 
 def child(parent, name):
