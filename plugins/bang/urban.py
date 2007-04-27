@@ -1,6 +1,6 @@
 #!/usr/bin/python
 """Look up a word in the Urban Dictionary. Optionally use n'th entry.
-!urban <word> | !urban <n> <word>"""
+!urban [<n>] <word>"""
 
 def bang(pipein, arguments, event):
     import SOAPpy
