@@ -7,7 +7,7 @@ def bang(pipein, arguments, event):
     search = pipein + " " + arguments
     search = search.replace("+","%2B")
     url = "http://www.google.com/search?hl=en&q="+ re.sub(" ", "+", search) +"&btnG=Google+Search"
-    groups = fishapi.http_grep(url, "calc_img.gif><\/td><td>&nbsp;<\/td><td nowrap><font size\=\+1><b>(.*?)<\/b>")
+    groups = fishapi.http_grep(url, "calc_img.gif>.*?<b>(.*?)<\/b>")
     try:
         response = re.sub('<sup>', '^', groups[0])
         response = re.sub('<.*?>', '', response)
