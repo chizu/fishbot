@@ -9,7 +9,7 @@ import fishapi
 def bang(pipein, arguments, event):
     if len(arguments) is 0:
         from glob import glob
-        submodules = glob("plugins/bang/*")
+        submodules = glob("plugins/bang/*.py")
         commands = set()
         for each in submodules:
             each = each.split('/')[-1].split('.')[0]
