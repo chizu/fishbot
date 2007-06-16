@@ -24,9 +24,9 @@ def bang(pipein, arguments, event):
 			search_domain = fishapi.backend.last(event.target, lines)[1:]
 		else:
 			search_domain = fishapi.backend.last(event.source, lines)[1:]
-			for each in search_domain:
-				each[4] = each[4].replace('\001ACTION', fishapi.getnick(each[1]))
-				each[4] = each[4].replace('\001', '')
+		for each in search_domain:
+			each[4] = each[4].replace('\001ACTION', fishapi.getnick(each[1]))
+			each[4] = each[4].replace('\001', '')
 		try:
 			option_values = {'I':re.I, 'L':re.L, 'M':re.M, 'S':re.S, 'U':re.U, 'X':re.X,
 							 'i':re.I,			 'g':re.M}
