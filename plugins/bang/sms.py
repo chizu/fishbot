@@ -28,7 +28,7 @@ def login():
 def bang(pipein, arguments, event):
     import smtplib
 
-    out_srv = 'smtp.comcast.net' #outgoing mail server
+    out_srv = 'localhost' #outgoing mail server
     src_add = 'irc@spicious.com'  #source email address ( for replies )
 
     arguments = arguments.split()
