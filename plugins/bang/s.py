@@ -1,6 +1,6 @@
 #!/usr/bin/python
 """!s - Regular expression substitution. Options available are:
-The python standard re ones, some perl (g,i), and a number for
+The python standard re ones, some perl style (i), and a number for
 number of lines to scan (0-9).
 Usage: !s/<select>/<replace>/<options>"""
 import re,sys,os,string,difflib
@@ -20,7 +20,7 @@ def bang(pipein, arguments, event):
 		else:
 			lines = 2
 		# Search globally, or just the user executing the command
-		if 'g' in options or 'M' in options:
+		if 'm' in options or 'M' in options:
 			search_domain = fishapi.backend.last(event.target, lines)[1:]
 		else:
 			search_domain = fishapi.backend.last(event.source, lines)[1:]
@@ -29,7 +29,7 @@ def bang(pipein, arguments, event):
 			each[4] = each[4].replace('\001', '')
 		try:
 			option_values = {'I':re.I, 'L':re.L, 'M':re.M, 'S':re.S, 'U':re.U, 'X':re.X,
-							 'i':re.I,			 'g':re.M}
+							 'i':re.I,			 'm':re.M}
 			# eval, be careful changing this as to not allow arbitrary
 			# python to be executed
 			compiled = re.compile(pattern, options and eval('|'.join(options), None, option_values) or 0)
@@ -41,4 +41,4 @@ def bang(pipein, arguments, event):
 		except:
 			raise
 	else:
-		return ("Invalid regular expression (check for missing /'s)", None)
+		return ("Wrong number of /'s.", None)
