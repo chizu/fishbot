@@ -66,6 +66,9 @@ class Client(protocols.generic.Client):
 			if v[0] == 32: # Broken pipe
 				self.disconnect()
 				self.connect()
+			else: # Unknown socket error
+				self.disconnect()
+				raise
 		if length == len(string):
 			return 
 		else:
