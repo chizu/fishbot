@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import socket
 import protocols.generic
+socket.setdefaulttimeout(60.0) # Socket timeout
 
 class SocketEvent(protocols.generic.Event):
 	pass
@@ -62,6 +63,9 @@ class Client(protocols.generic.Client):
 				length = self.ssl.write(string)
 			else:
 				length = self.sock.send(string)
+		except socket.timeout:
+			self.disconnect()
+			self.connect()
 		except socket.error, v:
 			if v[0] == 32: # Broken pipe
 				self.disconnect()
