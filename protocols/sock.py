@@ -34,6 +34,7 @@ class Client(protocols.generic.Client):
 	def disconnect(self):
 		"""Called to disconnect, may be called multiple times in case of reconnecting."""
 		if self.ssl:
+			self.ssl.close()
 			del(self.ssl)
 		self.sock.close()
 		del(self.sock)
@@ -56,10 +57,15 @@ class Client(protocols.generic.Client):
 
 	def send(self, string):
 		"""Called to send raw data out the socket."""
-		if self.ssl:
-			length = self.ssl.write(string)
-		else:
-			length = self.sock.send(string)
+		try:
+			if self.ssl:
+				length = self.ssl.write(string)
+			else:
+				length = self.sock.send(string)
+		except socket.error, v:
+			if v[0] == 32: # Broken pipe
+				self.disconnect()
+				self.connect()
 		if length == len(string):
 			return 
 		else:
