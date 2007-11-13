@@ -30,6 +30,7 @@ class Fishbot(protocols.ThreadManager):
 	def invited(self, event):
 		"""Join a channel/room when invited."""
 		event.server.join(event.arguments)
+		event.server.channels.append(event.arguments)
 
 	def messaged(self, event):
 		"""As messages occur, call the appropriate hooks in the plugins.

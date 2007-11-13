@@ -26,6 +26,7 @@ class Client(protocols.sock.Client):
 	def __init__(self, nick, realname, hostname, port, ssl=False):
 		self._nick = nick
 		self.realname = realname
+		self.channels = []
 		self.triggers.register("PING", self.pong)
 		self.triggers.register("433", self.nickinuse)
 		self.triggers.alias("CTCP", "message")
@@ -46,6 +47,8 @@ class Client(protocols.sock.Client):
 		super(Client, self).connect() # Do the socket connection
 		self.nick = self._nick
 		self.send("USER " + self.nick + " 0 * :" + self.realname)
+		for each in self.channels:
+			self.join(each)
 
 	def disconnect(self, reason=""):
 		self.send("QUIT :" + reason)
@@ -61,6 +64,7 @@ class Client(protocols.sock.Client):
 			self.send("JOIN " + channel + " " + key)
 		else:
 			self.send("JOIN " + channel)
+		self.channels.append(channel)
 
 	def message(self, to, message):
 		self.send("PRIVMSG " + to + " :" + message + "\n")
