@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import socket
 import protocols.generic
-socket.setdefaulttimeout(60.0) # Socket timeout
+socket.setdefaulttimeout(180.0) # Socket timeout
 
 class SocketEvent(protocols.generic.Event):
 	pass
@@ -51,10 +51,14 @@ class Client(protocols.generic.Client):
 
 	def recv(self):
 		"""Called to retrieve raw data from the socket."""
-		if self.ssl:
-			return self.ssl.read()
-		else:
-			return self.sock.recv(1024)
+		try:
+			if self.ssl:
+				return self.ssl.read()
+			else:
+				return self.sock.recv(1024)
+		except socket.timeout:
+			self.disconnect()
+			self.connect()
 
 	def send(self, string):
 		"""Called to send raw data out the socket."""
@@ -63,9 +67,6 @@ class Client(protocols.generic.Client):
 				length = self.ssl.write(string)
 			else:
 				length = self.sock.send(string)
-		except socket.timeout:
-			self.disconnect()
-			self.connect()
 		except socket.error, v:
 			if v[0] == 32: # Broken pipe
 				self.disconnect()
