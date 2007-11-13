@@ -48,7 +48,7 @@ class Client(protocols.sock.Client):
 		self.nick = self._nick
 		self.send("USER " + self.nick + " 0 * :" + self.realname)
 		for each in self.channels:
-			self.join(each)
+			self.join(each, rejoin=True)
 
 	def disconnect(self, reason=""):
 		self.send("QUIT :" + reason)
@@ -59,12 +59,13 @@ class Client(protocols.sock.Client):
 		for each in string.splitlines():
 			self.action(to, each)
 		
-	def join(self, channel, key=None):
+	def join(self, channel, key=None, rejoin=False):
 		if key:
 			self.send("JOIN " + channel + " " + key)
 		else:
 			self.send("JOIN " + channel)
-		self.channels.append(channel)
+		if not rejoin:
+			self.channels.append(channel)
 
 	def message(self, to, message):
 		self.send("PRIVMSG " + to + " :" + message + "\n")
