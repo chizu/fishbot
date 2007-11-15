@@ -59,6 +59,7 @@ class Client(protocols.generic.Client):
 		except socket.timeout:
 			self.disconnect()
 			self.connect()
+			return ''
 
 	def send(self, string):
 		"""Called to send raw data out the socket."""
