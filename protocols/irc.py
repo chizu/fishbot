@@ -96,7 +96,7 @@ class Client(protocols.sock.Client):
 			buff = nextline + self.recv()
 			nextline = ''
 			if not buff:
-				self.reconnect()
+				Client.reconnect()
 				continue
 			lines = buff.split("\n")
 			if lines[-1] != '':

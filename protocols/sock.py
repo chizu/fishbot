@@ -57,8 +57,7 @@ class Client(protocols.generic.Client):
 			else:
 				return self.sock.recv(1024)
 		except socket.timeout:
-			self.disconnect()
-			self.connect()
+			Client.reconnect()
 			return ''
 
 	def send(self, string):
@@ -70,10 +69,9 @@ class Client(protocols.generic.Client):
 				length = self.sock.send(string)
 		except socket.error, v:
 			if v[0] == 32: # Broken pipe
-				self.disconnect()
-				self.connect()
+				Client.reconnect()
 			else: # Unknown socket error
-				self.disconnect()
+				Client.disconnect()
 				raise
 		if length == len(string):
 			return 
