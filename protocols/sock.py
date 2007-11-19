@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import socket
 import protocols.generic
-socket.setdefaulttimeout(300.0) # Socket timeout
+socket.setdefaulttimeout(600.0) # Socket timeout
 
 class SocketEvent(protocols.generic.Event):
 	pass
