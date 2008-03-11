@@ -3,4 +3,4 @@
 import fishapi
 
 def bang(pipein, arguments, event):
-    return (fishapi.version + " - SVN at http://fishbot.spicious.com/svn/fishbot", None)
+    return (fishapi.version + " -  git repo at git://spicious.com/home/chizu/git/fishbot", None)
