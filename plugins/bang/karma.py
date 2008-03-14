@@ -44,7 +44,8 @@ FULL OUTER JOIN
      ORDER BY sum(score)) AS people 
    ON scores.string = people.string 
    ORDER BY final_score) AS negative 
-ON positive.string = negative.string 
+ON positive.string = negative.string
+WHERE positive.string != 'notice' AND positive.string != ''
 ORDER BY score;"""
 
 def calckarma(thing):
@@ -70,7 +71,7 @@ def bang(pipein, arguments, event):
 	if token == 'stats':
 		results = backend.sql_query(stats_sql)
 		results = sorted(results, key=itemgetter(1))
-		return ("Highest score: %s (%s) - Lowest score: %s (%s)" % (results[0][0], results[0][1], results[-1][0], results[-1][1]), None)
+		return ("Highest score: %s (%s) - Lowest score: %s (%s)" % (results[-1][0], results[-1][1], results[0][0], results[0][1]), None)
 	else:
 		thing = Karma(-1, string=token)
 		score = calckarma(thing)
