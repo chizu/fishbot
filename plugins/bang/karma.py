@@ -69,7 +69,7 @@ def bang(pipein, arguments, event):
 		arguments = token
 	if token == 'stats':
 		results = backend.sql_query(stats_sql)
-		results = sorted(results.items(), key=itemgetter(1))
+		results = sorted(results, key=itemgetter(1))
 		return ("Highest score: %s (%s) - Lowest score: %s (%s)" % (results[0][0], results[0][1], results[-1][0], results[-1][1]), None)
 	else:
 		thing = Karma(-1, string=token)
