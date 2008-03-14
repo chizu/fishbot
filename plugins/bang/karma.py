@@ -78,7 +78,7 @@ def bang(pipein, arguments, event):
 			amount = 3
 		if len(tokens) >= 2:
 			if tokens[1] == 'top':
-				return ("Karma top %s:\n%s" % (amount, ", ".join([":".join([str(y) fro y in x]) for x in results[-amount:]])), None)
+				return ("Karma top %s:\n%s" % (amount, ", ".join([":".join([str(y) for y in x]) for x in results[-amount:]])), None)
 			elif tokens[1] == 'bottom':
 				return ("Karma bottom %s:\n%s" % (amount, ", ".join([":".join([str(y) for y in x]) for x in results[:amount]])), None)
 			elif tokens[1] == 'middle':
