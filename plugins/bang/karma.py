@@ -72,7 +72,7 @@ def bang(pipein, arguments, event):
 	if tokens[0] == 'stats':
 		results = backend.sql_query(stats_sql)
 		results = sorted(results, key=itemgetter(1))
-		if len(tokens) >= 3 and tokens[2].isdigit() and int(tokens[2]) <= 9:
+		if len(tokens) >= 3 and tokens[2].isdigit() and int(tokens[2]) <= 15:
 			amount = int(tokens[2])
 		else:
 			amount = 3
