@@ -78,12 +78,12 @@ def bang(pipein, arguments, event):
 			amount = 3
 		if len(tokens) >= 2:
 			if tokens[1] == 'top':
-				return ("Karma top %s:\n%s" % (amount, ", ".join([":".join(x) for x in results[-amount:])])), None)
+				return ("Karma top %s:\n%s" % (amount, ", ".join([":".join(x) for x in results[-amount:]])), None)
 			elif tokens[1] == 'bottom':
-				return ("Karma bottom %s:\n%s" % (amount, ", ".join([":".join(x) for x in results[:amount])])), None)
+				return ("Karma bottom %s:\n%s" % (amount, ", ".join([":".join(x) for x in results[:amount]])), None)
 			elif tokens[1] == 'middle':
 				mid_point = int(len(results)/2)
-				return ("Karma middle %s:\n%s" % (amount, ", ".join([":".join(x) for x in results[mid_point-int(amount/2):mid_point+int(amount/2)])])), None)
+				return ("Karma middle %s:\n%s" % (amount, ", ".join([":".join(x) for x in results[mid_point-int(amount/2):mid_point+int(amount/2)]])), None)
 		return ("Highest score: %s (%s) - Lowest score: %s (%s)" % (results[-1][0], results[-1][1], results[0][0], results[0][1]), None)
 	else:
 		thing = Karma(-1, string=token)
