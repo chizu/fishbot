@@ -16,9 +16,13 @@ def karma(self, event):
 	if operator[0] == '+':
 		if item.score < 7 - len(operator):
 			item.score += len(operator) - 1
+		else:
+			item.score = 5
 	elif operator[0] == '-':
 		if item.score > -7 + len(operator):
 			item.score -= len(operator) - 1
+		else:
+			item.score = -5
 	else:
 		print "karma.py: Something odd has happened."
 
