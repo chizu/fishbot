@@ -13,13 +13,13 @@ def karma(self, event):
 	before, string, operator = re.search(expression[0], event.arguments).groups()
 	string = string.strip().lower()
 	item = Karma(string=string, nick=event.source)
-	if operator == '++':
+	if operator[0] == '+':
 		if item.score < 5:
-			item.score += 1
-	elif operator == '--':
+			item.score += len(operator) - 1
+	elif operator[0] == '-':
 		if item.score > -5:
-			Karma(string=string).score -= 1
+			item.score -= len(operator) - 1
 	else:
 		print "karma.py: Something odd has happened."
 
-expression = ("(^.*[^\w' ]|^)(.*?)([+]{2}|[-]{2})", karma)
+expression = ("(^.*[^\w' ]|^)(.*?)([+]{2,6}|[-]{2,6})", karma)
