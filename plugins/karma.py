@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 """Track karma for stuff."""
 import backend
+from fishapi import getnick
 
 class Karma(backend.DatabaseObject):
 	"""Class for tracking karma."""
@@ -12,7 +13,7 @@ def karma(self, event):
 	import re, fishapi
 	before, string, operator = re.search(expression[0], event.arguments).groups()
 	string = string.strip().lower()
-	item = Karma(string=string, nick=event.source)
+	item = Karma(string=string, nick=getnick(event.source))
 	if operator[0] == '+':
 		if item.score < 7 - len(operator):
 			item.score += len(operator) - 1
