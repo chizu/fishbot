@@ -15,12 +15,14 @@ def bang(pipein, arguments, event):
 		# Assumed to start with s/
 		(pattern, repl, options) = unescaped_slash.split(arguments)[1:]
 		# Number of lines to search
+		lines = 20
+		# Number of lines to match
 		if re.search('([1-9])', options):
-			lines = int(re.search('([1-9])', options).group(0)) + 1
+			lines_returned = int(re.search('([1-9])', options).group(0)) + 1
 		else:
-			lines = 2
+			lines_returned = 1
 		# Search globally, or just the user executing the command
-		if 'm' in options or 'M' in options:
+		if 'm' in options or 'M' in options or 'g' in options or 'G' in options:
 			search_domain = fishapi.backend.last(event.target, lines)[1:]
 		else:
 			search_domain = fishapi.backend.last(event.source, lines)[1:]
@@ -28,8 +30,8 @@ def bang(pipein, arguments, event):
 			each[4] = each[4].replace('\001ACTION', fishapi.getnick(each[1]))
 			each[4] = each[4].replace('\001', '')
 		try:
-			option_values = {'I':re.I, 'L':re.L, 'M':re.M, 'S':re.S, 'U':re.U, 'X':re.X,
-							 'i':re.I,			 'm':re.M}
+			option_values = {'I':re.I, 'L':re.L, 'M':re.M, 'S':re.S, 'U':re.U, 'X':re.X, 'G':re.M,
+							 'i':re.I,			 'm':re.M,                               'g':re.M}
 			# eval, be careful changing this as to not allow arbitrary
 			# python to be executed
 			compiled = re.compile(pattern, options and eval('|'.join(options), None, option_values) or 0)
@@ -37,6 +39,8 @@ def bang(pipein, arguments, event):
 			for each in search_domain:
 				if compiled.search(each[4]):
 					returned.append("%s meant to say: %s" % (fishapi.getnick(each[1]), compiled.sub(repl, each[4]).replace("\/", "/")))
+			if len(returned) > lines_returned:
+				returned = returned[:lines_returned]
 			return (returned, None)
 		except:
 			raise
