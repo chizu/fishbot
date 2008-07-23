@@ -39,7 +39,7 @@ def bang(pipein, arguments, event):
 		else:
 			outstr = "Too many results, sent in private message"
 			for each in addrs:
-				event.server.say(event.source, each)
+				event.server.say(event.source, "[" + str(each.id) + "] "+ each.name + " - " + each.address)
 		return(outstr, None)
 
 	elif (arguments[0] == 'remove' or arguments[0] == 'delete' or arguments[0] == 'rm'):
