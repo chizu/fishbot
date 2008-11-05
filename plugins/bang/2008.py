@@ -47,7 +47,7 @@ def bang(pipein, arguments, event):
 				line += color
 			else:
 				line += ' '
-		piechart += line
+		piechart.append(line)
 	if '-pie' in arguments:
 		for each in piechart:
 			event.server.say(fishapi.getnick(event.target), each)
