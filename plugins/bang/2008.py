@@ -48,7 +48,9 @@ def bang(pipein, arguments, event):
 				line += ' '
 		piechart += line
 	if '-pie' in arguments:
-		return (piechart, None)
+		for each in piechart:
+			event.server.say(event.source, each)
+		return (cand_s, None)
 	else:
 		return (cand_s, None)
 
