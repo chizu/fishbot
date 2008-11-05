@@ -2,6 +2,7 @@
 import math
 import urllib
 import re
+import fishapi
 
 def bang(pipein, arguments, event):
 	radius = 5
@@ -49,7 +50,7 @@ def bang(pipein, arguments, event):
 		piechart += line
 	if '-pie' in arguments:
 		for each in piechart:
-			event.server.say(event.source, each)
+			event.server.say(fishapi.getnick(event.source), each)
 		return (cand_s, None)
 	else:
 		return (cand_s, None)
