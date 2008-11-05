@@ -6,6 +6,11 @@ import fishapi
 
 def bang(pipein, arguments, event):
 	radius = 5
+	if '-pie' in arguments:
+		args = arguments.split()
+		if len(args) >= 2:
+			radius = args[1]
+	if radius > 30: radius = 30
 	total = 538.0
 	
 	red = chr(27) + '[31m'
