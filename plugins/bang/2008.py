@@ -29,7 +29,7 @@ def bang(pipein, arguments, event):
 		elif each['party'] == 'R':
 			r = each['evotes']	
 
-	piechart = ''
+	piechart = []
 	for y in range(-radius, radius):
 		line = ''
 		for x in range(-2 * radius, 2 * radius):
@@ -50,7 +50,7 @@ def bang(pipein, arguments, event):
 		piechart += line
 	if '-pie' in arguments:
 		for each in piechart:
-			event.server.say(fishapi.getnick(event.source), each)
+			event.server.say(fishapi.getnick(event.target), each)
 		return (cand_s, None)
 	else:
 		return (cand_s, None)
