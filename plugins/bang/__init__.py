@@ -47,19 +47,22 @@ def bang(self, event):
 					(pubmsg, action) = module.bang(pipein, arguments, event)
 					if pubmsg and pipe is pipes[-1]:
 						if isinstance(pubmsg, (list, tuple)):
-							for each in pubmsg:
-								for each in each.split('\n'):
-									if each != '':
-										event.server.message(respond, each)
+							lines = [x.split('\n') for x in pubmsg]
 						else:
-							event.server.message(respond, pubmsg)
+							lines = pubmsg.split('\n')
+						if len(lines) > 5:
+							# Private message
+							respond = self.respond_to(event.target, event.source)
+						for each in lines:
+							if each != '':
+								event.server.message(respond, each)
 					elif pubmsg:
 						if isinstance(pubmsg, (list, tuple)):
 							pipein = string.join(pubmsg, '\n')
 						else:
 							pipein = pubmsg
 					if action:
-						if isinstance(action, list):
+						if isinstance(action, (list, tuple)):
 							for each in action:
 								event.server.action(respond, each)
 						else:
