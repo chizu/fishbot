@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """Addressbook Plugin
 !ab [add <name> <address> | remove <name> | list | find <name or address>]"""
-import backend, fishapi
+import backend
 
 class address(backend.DatabaseObject):
 	name = ""
@@ -33,13 +33,8 @@ def bang(pipein, arguments, event):
 		else:
 			addrs = address(-1, __namespace__ = event.target)
 
-		if len(addrs) < 3:
-			for each in addrs:
-				outstr.append("[" + str(each.id) + "] "+ each.name + " - " + each.address)
-		else:
-			outstr = "Too many results, sent in private message"
-			for each in addrs:
-				event.server.say(fishapi.getnick(event.source), "[" + str(each.id) + "] "+ each.name + " - " + each.address)
+		for each in addrs:
+			outstr.append("[" + str(each.id) + "] "+ each.name + " - " + each.address)
 		return(outstr, None)
 
 	elif (arguments[0] == 'remove' or arguments[0] == 'delete' or arguments[0] == 'rm'):
