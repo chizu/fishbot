@@ -17,6 +17,7 @@ That's the basic idea. Other things to know are, pipein contains anything piped 
 Fishapi is probably also useful if you want to do anything more than trivial. See its documentation for using it.
 """
 import sys, string
+import fishapi
 from glob import glob
 submodules = glob("plugins/bang/*")
 __all__ = set()
@@ -54,7 +55,7 @@ def bang(self, event):
 							lines = pubmsg.split('\n')
 						if len(lines) > 5:
 							# Private message
-							respond = self.respond_to(event.target, event.source)
+							respond = fishapi.getnick(event.source)
 						for each in lines:
 							if each != '':
 								event.server.message(respond, each)
