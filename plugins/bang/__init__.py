@@ -53,7 +53,7 @@ def bang(self, event):
 								lines += line.split('\n')
 						else:
 							lines = pubmsg.split('\n')
-						if len(lines) > 9:
+						if len(lines) > 8:
 							# Private message
 							respond = fishapi.getnick(event.source)
 						for each in lines:
