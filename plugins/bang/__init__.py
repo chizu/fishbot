@@ -47,7 +47,9 @@ def bang(self, event):
 					(pubmsg, action) = module.bang(pipein, arguments, event)
 					if pubmsg and pipe is pipes[-1]:
 						if isinstance(pubmsg, (list, tuple)):
-							lines = [x.split('\n') for x in pubmsg]
+							lines = list()
+							for line in pubmsg:
+								lines += line.split('\n')
 						else:
 							lines = pubmsg.split('\n')
 						if len(lines) > 5:
