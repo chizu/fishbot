@@ -22,7 +22,7 @@ def bang(pipein, arguments, event):
             try:
                 if each[0] is "!":
                     each = each[1:]
-                help_string = importer.__import__(each, globals(), locals(), 'plugins/bang').__doc__
+                help_string = importer.__import__(each, globals(), locals(), 'plugins.bang').__doc__
                 reply.append(help_string)
             except:
                 reply.append("No help available for %s." % each)

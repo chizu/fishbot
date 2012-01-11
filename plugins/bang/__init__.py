@@ -41,7 +41,7 @@ def bang(self, event):
 			name = postpipe.group(1)
 			arguments = string.strip(postpipe.group(2))
 			try:
-				module = importer.__import__(name, globals(), locals(), 'plugins/bang')
+				module = importer.__import__(name, globals(), locals(), 'plugins.bang')
 				if hasattr(module, 'bang'):
 					# New API
 					respond = self.respond_to(event.source, event.target)
