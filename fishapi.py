@@ -30,7 +30,7 @@ def http_grep(url, regexp):
 			return search.groups()
 
 # Chesterfield derived objects
-database = chesterfield.Chesterfield(user='fishbot', host='localhost', database='fishbot')
+database = chesterfield.Chesterfield(user='fishbot', database='fishbot')
 DatabaseObject = database.object
 #ReadOnlyDatabaseObject = chesterfield.DatabaseObject(user='fishbotread', host='localhost', database='fishbot')
 

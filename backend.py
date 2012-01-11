@@ -8,12 +8,12 @@ import thread
 backend_lock = thread.allocate_lock()
 
 # Standard SQL access.
-writedb = pgdb.connect(user='fishbot', host='localhost', database='fishbot')
+writedb = pgdb.connect(user='fishbot', database='fishbot')
 # Read only access.
-readdb = pgdb.connect(user='fishbotread', host='localhost', database='fishbot')
+readdb = pgdb.connect(user='fishbotread', database='fishbot')
 
 # Chesterfield derived objects
-DatabaseObject = chesterfield.Chesterfield(user='fishbot', host='localhost', database='fishbot').object
+DatabaseObject = chesterfield.Chesterfield(user='fishbot', database='fishbot').object
 #ReadOnlyDatabaseObject = chesterfield.DatabaseObject(user='fishbotread', host='localhost', database='fishbot')
 
 def sql_query(string, readonly=True):
