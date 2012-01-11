@@ -1,7 +1,9 @@
 #!/usr/bin/python
 """!morse - Morse encoding
 Usage: <text> | !morse"""
-import re,os
+import re
+import os
 
 def bang(pipein, arguments, event):
-    return (os.popen('echo "%s" | cwtext' % re.escape(pipein)).readlines(), None)
+     lines = os.popen('echo "%s" | morse -s' % re.escape(pipein)).readlines()
+     return ("".join(lines.split('/n')), None)
