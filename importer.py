@@ -5,22 +5,15 @@ __import__ here works like the builtin __import__, but will destroy any implicit
 This is error prone, if a third party module executing under the same interpreter imports the module that was pulled in with this __import__, removing it from sys could have undesirable effects. Use this __import__ function with caution."""
 import __builtin__
 import sys,os
+import imp
 
 # Set this to True to see what kind of import operations are actually done
 debug = False
-
-def child(parent, name):
-    if parent.__name__ != name:
-        return getattr(parent, name)
-    else:
-        return parent
 
 def __import__(name, glob = globals(), loc = locals(), path=""):
     """Runtime reloading importer.
 
     Import a module multiple times, when code has changed on disk between each import, updating the code getting executed."""
-    #if not sys.modules.has_key(path):
-    #    __import__(path, glob, loc)
     if debug: print "###IMPORTER###"
     leaf = name
     if path:
@@ -38,7 +31,7 @@ def __import__(name, glob = globals(), loc = locals(), path=""):
                     # The module has been modified, reimport it
                     del(sys.modules[name])
                     if debug: print "###REIMPORTED###"
-                    return child(__builtin__.__import__(name), leaf)
+                    return __builtin__.__import__(name, fromlist=path)
             else:
                 # The module no longer exists, remove it
                 del(sys.modules[name])
@@ -50,4 +43,4 @@ def __import__(name, glob = globals(), loc = locals(), path=""):
     else:
         # Initial import
         if debug: print "###INITIALLY IMPORTED###"
-        return child(__builtin__.__import__(name), leaf)
+        return __builtin__.__import__(name, fromlist=path)
