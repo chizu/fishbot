@@ -1,4 +1,6 @@
 #!/usr/bin/python
+"""!roll - Roll a dice (d20 by default)
+Usage: !roll [sides]"""
 import re,os,random
 
 def bang(pipein, arguments, event):
