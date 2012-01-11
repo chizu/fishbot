@@ -29,6 +29,7 @@ class Client(protocols.sock.Client):
 		self.channels = []
 		self.triggers.register("PING", self.pong)
 		self.triggers.register("433", self.nickinuse)
+		self.triggers.register("376", self.connected)
 		self.triggers.alias("CTCP", "message")
 		self.triggers.alias("JOIN", "message")
 		self.triggers.alias("NICK", "message")
@@ -47,8 +48,11 @@ class Client(protocols.sock.Client):
 		super(Client, self).connect() # Do the socket connection
 		self.nick = self._nick
 		self.send("USER " + self.nick + " 0 * :" + self.realname)
+
+	def connected(self, args):
+		"""Join channels after everything is ready."""
 		for each in self.channels:
-			self.join(each, rejoin=True)
+			self.join(each[0], key=each[1], rejoin=True)
 
 	def disconnect(self, reason=""):
 		self.send("QUIT :" + reason)
@@ -65,7 +69,7 @@ class Client(protocols.sock.Client):
 		else:
 			self.send("JOIN " + channel)
 		if not rejoin:
-			self.channels.append(channel)
+			self.channels.append((channel, key))
 
 	def message(self, to, message):
 		self.send("PRIVMSG " + to + " :" + message + "\n")
