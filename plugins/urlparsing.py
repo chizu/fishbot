@@ -52,7 +52,6 @@ def getText(nodelist):
 def urlmatcher(self, event):
 	"""The magic of URL parsing."""
 	import re,urllib,string
-	import xml.dom.minidom, xml.parsers.expat
 
 	output = ""
 	m = regex.search(event.arguments)
@@ -72,15 +71,11 @@ def urlmatcher(self, event):
 				output += "Content Type: " + (resource.info().getheader('Content-Type') or "b0rked webserver")
 			resource.close()
 			return
-		try:
-			xhtml = resource.readlines()
-			dom = xml.dom.minidom.parseString(string.join(xhtml))
-			output += "XHTML, Title: " + getText(dom.getElementsByTagName("title")[0].childNodes)
-		except xml.parsers.expat.ExpatError:
-			for each in xhtml:
-				if re.compile("\<title.*\>(.*)\<\/title\>",re.I).search(each):
-					match = re.search("\<title.*\>(.*)\<\/title\>",each,re.I)
-					output += "Malformed XML, Title: " + match.group(1)
+
+		for each in resource.readlines():
+			if re.compile("\<title.*\>(.*)\<\/title\>",re.I).search(each):
+				match = re.search("\<title.*\>(.*)\<\/title\>",each,re.I)
+				output += "Title: " + match.group(1)
 
 		if output:
 			event.server.say(respond, output)
