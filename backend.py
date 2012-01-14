@@ -1,7 +1,10 @@
 #!/usr/bin/python
 import pgdb
 import sys, os, time, string
-import chesterfield
+
+from sqlalchemy import create_engine
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import Session, sessionmaker
 
 # locking
 import thread
@@ -12,9 +15,15 @@ writedb = pgdb.connect(user='fishbot', database='fishbot')
 # Read only access.
 readdb = pgdb.connect(user='fishbotread', database='fishbot')
 
-# Chesterfield derived objects
-DatabaseObject = chesterfield.Chesterfield(user='fishbot', database='fishbot').object
-#ReadOnlyDatabaseObject = chesterfield.DatabaseObject(user='fishbotread', host='localhost', database='fishbot')
+engine = create_engine('postgresql:///fishbot')
+# SQLAlchemy base
+DatabaseObject = declarative_base()
+Session = sessionmaker(bind=engine)
+
+def get_session():
+    # Naively return a database session
+    DatabaseObject.metadata.create_all(engine)
+    return Session()
 
 def sql_query(string, readonly=True):
     """Execute a raw query.

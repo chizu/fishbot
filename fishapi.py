@@ -1,9 +1,12 @@
 #!/usr/bin/python
 """Functions to share with modules isolated from the Fishbot object."""
-import importer
 import sys, os, time, string
 import urllib, re
-import chesterfield
+
+from sqlalchemy import Column, Integer, String
+
+import importer
+from backend import DatabaseObject, get_session
 
 #version - string set by main class
 #execution_time - time set by main class
@@ -29,12 +32,22 @@ def http_grep(url, regexp):
 		if search:
 			return search.groups()
 
-# Chesterfield derived objects
-database = chesterfield.Chesterfield(user='fishbot', database='fishbot')
-DatabaseObject = database.object
-#ReadOnlyDatabaseObject = chesterfield.DatabaseObject(user='fishbotread', host='localhost', database='fishbot')
-
 class Counter(DatabaseObject):
 	"Count things!"
-	name = "" # name of the counter
-	count = 0 # the count
+	__tablename__ = 'counters'
+	name = Column(String, primary_key=True) # name of the counter
+	count = Column(Integer) # the count
+
+	def __init__(self, name):
+		self.name = name
+		self.count = 0
+
+def get_counter(name, sql_session=None):
+	if not sql_session:
+		sql_session = get_session()
+	counter = sql_session.query(Counter).filter_by(name=name).first()
+	if not counter:
+		counter = Counter(name=name)
+		sql_session.add(counter)
+		sql_session.commit()
+	return counter
