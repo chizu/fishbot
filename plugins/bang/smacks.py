@@ -1,7 +1,7 @@
 #!/usr/bin/python
 """Please, stop with the beatings."""
-import fishapi
-smacks = fishapi.Counter(name="smacks")
+from fishapi import get_counter
 
 def bang(pipein, arguments, event):
+    smacks = get_counter("smacks")
     return ("%d smacks received." % smacks.count, None)
