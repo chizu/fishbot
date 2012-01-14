@@ -1,11 +1,13 @@
 #!/usr/bin/env python
 """!karma - Show karma stats for things.
 !karma <thing> | stats [[top,bottom,middle] <n>]"""
-import backend, fishapi
 from operator import itemgetter
+
+import backend
+import fishapi
 from plugins.karma import Karma
 
-stats_sql = """SELECT COALESCE(positive.string, negative.string), 
+stats_sql = """SELECT COALESCE(positive.string, negative.string) AS string, 
 COALESCE(positive.final_score, 0) + COALESCE(negative.final_score, 0) AS score 
 FROM 
   (SELECT scores.string, scores.total * people.total 
@@ -13,39 +15,39 @@ FROM
    FROM 
     (SELECT string, 
      sum(score) as total 
-     FROM objects."Karma" 
+     FROM karma 
      WHERE score > 0 
      GROUP BY string 
      ORDER BY sum(score)) AS scores 
    JOIN 
     (SELECT string, 
      count(nick) as total 
-     FROM objects."Karma" 
+     FROM karma 
      WHERE score > 0 
      GROUP BY string 
      ORDER BY sum(score)) AS people 
    ON scores.string = people.string 
    ORDER BY final_score) AS positive 
 FULL OUTER JOIN 
-  (SELECT scores.string, scores.total * people.total AS final_score 
+  (SELECT scores.string, scores.total * people.total
+   AS final_score 
    FROM 
     (SELECT string, 
      sum(score) as total 
-     FROM objects."Karma" 
+     FROM karma 
      WHERE score < 0 
      GROUP BY string 
      ORDER BY sum(score)) AS scores 
    JOIN 
     (SELECT string, 
      count(nick) as total 
-     FROM objects."Karma"
+     FROM karma
      WHERE score < 0 
      GROUP BY string 
      ORDER BY sum(score)) AS people 
    ON scores.string = people.string 
    ORDER BY final_score) AS negative 
 ON positive.string = negative.string
-WHERE positive.string != 'notice' AND positive.string != ''
 ORDER BY score;"""
 
 def calckarma(thing):
@@ -64,13 +66,16 @@ def calckarma(thing):
 	return (positive * pcount) - (negative * ncount)
 
 def bang(pipein, arguments, event):
+	sql_session = backend.get_session()
 	token = arguments.strip().lower()
 	if not token:
 		token = fishapi.getnick(event.source).strip().lower()
 		arguments = token
 	tokens = token.split()
 	if tokens[0] == 'stats':
-		results = backend.sql_query(stats_sql)
+		results = sql_session.query("string", "score").\
+		    from_statement(stats_sql).all()
+		sql_session.commit()
 		results = sorted(results, key=itemgetter(1))
 		if len(tokens) >= 3 and tokens[2].isdigit() and int(tokens[2]) <= 15:
 			amount = int(tokens[2])
@@ -89,8 +94,9 @@ def bang(pipein, arguments, event):
 						(amount, ", ".join([":".join([str(y) for y in x]) for x in results[mid_point-int(amount/2 + 1):mid_point+int(amount/2 + 1)]])), None)
 		return ("Highest score: %s (%s) - Lowest score: %s (%s)" % (results[-1][0], results[-1][1], results[0][0], results[0][1]), None)
 	else:
-		thing = Karma(-1, string=token)
-		score = calckarma(thing)
+		things = sql_session.query(Karma).filter_by(string=token)
+		sql_session.commit()
+		score = calckarma(things)
 		if score:
 			return ("'%s' has a score of: %s" % (arguments, score), None)
 		else:
