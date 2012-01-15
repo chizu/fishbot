@@ -8,8 +8,8 @@ def bang(pipein, arguments, event):
     if pipein or arguments:
         spelling = [pipein or arguments]
     else:
-        result = backend.last(event.source, 2)
-        spelling = [result[1][4]]
+        result = backend.last(type(event), event.source, 2)
+        spelling = [result[1].arguments]
     reply = []
     for spell in spelling:
         for each in os.popen('echo %s | aspell -a' % re.escape(spell)).readlines():

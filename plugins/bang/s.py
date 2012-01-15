@@ -23,12 +23,12 @@ def bang(pipein, arguments, event):
 			lines_returned = 1
 		# Search globally, or just the user executing the command
 		if 'm' in options or 'M' in options or 'g' in options or 'G' in options:
-			search_domain = fishapi.backend.last(event.target, lines)[1:]
+			search_domain = fishapi.backend.last(type(event), event.target, lines)[1:]
 		else:
-			search_domain = fishapi.backend.last(event.source, lines)[1:]
-		for each in search_domain:
-			each[4] = each[4].replace('\001ACTION', fishapi.getnick(each[1]))
-			each[4] = each[4].replace('\001', '')
+			search_domain = fishapi.backend.last(type(event), event.source, lines)[1:]
+		for past_event in search_domain:
+			past_event.arguments = past_event.arguments.replace('\001ACTION', fishapi.getnick(past_event.source))
+			past_event.arguments = past_event.arguments.replace('\001', '')
 		try:
 			option_values = {'I':re.I, 'L':re.L, 'M':re.M, 'S':re.S, 'U':re.U, 'X':re.X, 'G':re.M,
 							 'i':re.I,			 'm':re.M,                               'g':re.M}
@@ -36,9 +36,9 @@ def bang(pipein, arguments, event):
 			# python to be executed
 			compiled = re.compile(pattern, options and eval('|'.join(options), None, option_values) or 0)
 			returned = []
-			for each in search_domain:
-				if compiled.search(each[4]):
-					returned.append("%s meant to say: %s" % (fishapi.getnick(each[1]), compiled.sub(repl, each[4]).replace("\/", "/")))
+			for pevent in search_domain:
+				if compiled.search(pevent.arguments):
+					returned.append("%s meant to say: %s" % (fishapi.getnick(pevent.source), compiled.sub(repl, pevent.arguments).replace("\/", "/")))
 			if len(returned) > lines_returned:
 				returned = returned[:lines_returned]
 			return (returned, None)

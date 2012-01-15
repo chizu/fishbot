@@ -2,10 +2,15 @@
 """This is an example protocol interface.
 
 To implement protocols, you should subclass this and implement as many methods as are relevant to the protocol you are writing support for."""
+import sys
+import datetime
+
+from sqlalchemy import Column, Integer, String, DateTime
+
 import protocols
+from backend import DatabaseObject
 
 def Property(function):
-	import sys
 	keys = 'fget', 'fset', 'fdel'
 	func_locals = {'doc':function.__doc__}
 	def probeFunc(frame, event, arg):
@@ -18,10 +23,18 @@ def Property(function):
 	function()
 	return property(**func_locals)
 
-class Event(object):
+class Event(DatabaseObject):
 	"""Server triggered event."""
+	__tablename__ = 'events'
+
+	id = Column(Integer, primary_key=True)
+	timestamp = Column(DateTime(timezone=True))
+	source = Column(String)
+	target = Column(String)
+	command = Column(String)
+	arguments = Column(String)
+
 	def __init__(self, server, source, target, command, params, timestamp=None):
-		import datetime
 		self.server = server
 		self.source = source
 		self.target = target
