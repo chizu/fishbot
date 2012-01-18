@@ -8,10 +8,6 @@ from sqlalchemy import create_engine, or_
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import Session, sessionmaker
 
-# locking
-import thread
-backend_lock = thread.allocate_lock()
-
 engine = create_engine('postgresql:///fishbot')
 # SQLAlchemy base
 DatabaseObject = declarative_base()
@@ -26,11 +22,9 @@ def get_session():
 
 def add_event(event):
     """Accepts an IRCEvent, and adds it to the events table."""
-    backend_lock.acquire()
     sql_session = get_session()
     sql_session.add(event)
     sql_session.commit()
-    backend_lock.release()
 
 
 def last(Event, resource, count=1):
