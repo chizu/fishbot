@@ -7,6 +7,7 @@ from sqlalchemy import Column, Integer, String
 from backend import DatabaseObject, get_session
 from fishapi import getnick
 
+
 class Karma(DatabaseObject):
 	"""Class for tracking karma."""
 	__tablename__ = "karma"
@@ -14,11 +15,12 @@ class Karma(DatabaseObject):
 	string = Column(String, primary_key=True)
 	score = Column(Integer, nullable=False)
 	nick = Column(String, primary_key=True)
-	
+
 	def __init__(self, string, nick):
 		self.string = string
 		self.nick = nick
 		self.score = 0
+
 
 def karma(self, event):
 	sql_session = get_session()

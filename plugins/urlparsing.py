@@ -26,20 +26,20 @@ pattern = r"""
 #  it mustn't end in a punctuation mark or this would
 #  match this wrong: "Www.w3.org, ftp.simtel.net."
 """
-#"
+
 regex = re.compile(pattern, re.IGNORECASE | re.VERBOSE)
 
 def regular(url):
 	""" Add an appropiate prefix to an informal URL.
 	"""
-	if re.match(r"\w+:", url):			 #Has prefix already, leave it alone.
+	if re.match(r"\w+:", url):  # Has prefix already, leave it alone.
 		return url
 	else:
-		if re.match(r"(\w|-|%)+@", url):   #Starts like an email address.
+		if re.match(r"(\w|-|%)+@", url):  # Starts like an email address.
 			return "mailto:" + url
-		elif url[:3] == 'ftp':			   #Starts like an FTP address.
+		elif url[:3] == 'ftp':		  # Starts like an FTP address.
 			return "ftp://" + url
-		else:							   #Assume it's a WWW address.
+		else:				  # Assume it's a WWW address.
 			return "http://" + url
 
 def getText(nodelist):

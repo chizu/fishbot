@@ -13,12 +13,12 @@ class address(backend.DatabaseObject):
     name = ""
     address = ""
     __namespace__ = ""
-    
+
 def login():
-    server = 'spicious.com'       #options for the script: mail server
+    server = 'spicious.com'       # options for the script: mail server
     port = 993                    # port (this is for SSL)
-    user = 'irc'                  #imap username
-    passwd = 'SMS2ircw00t'        #imap password
+    user = 'irc'                  # imap username
+    passwd = 'SMS2ircw00t'        # imap password
 
     mc = imaplib.IMAP4_SSL(server, port)
     mc.login(user,passwd)
@@ -28,8 +28,8 @@ def login():
 def bang(pipein, arguments, event):
     import smtplib
 
-    out_srv = 'localhost' #outgoing mail server
-    src_add = 'irc@spicious.com'  #source email address ( for replies )
+    out_srv = 'localhost'         # outgoing mail server
+    src_add = 'irc@spicious.com'  # source email address ( for replies )
 
     arguments = arguments.split()
 
@@ -49,7 +49,7 @@ def bang(pipein, arguments, event):
                 fromStuff = "From: " + inAb.name
             else:
                 fromStuff = headers[0]
-            
+
             outstr.append(num + " " + fromStuff + " " + headers[1])
 
         mc.logout()
@@ -107,7 +107,7 @@ def bang(pipein, arguments, event):
             to = out_add.address
         else:
             to = arguments[1]
-        
+
         message = "From: " + src_add + "\r\n"
         message += "To: " + to + "\r\n"
         message += "Subject: " + event.target + " " + event.source.split('!')[0] + "\r\n\r\n"
@@ -117,5 +117,3 @@ def bang(pipein, arguments, event):
         mc.quit()
         del(mc)
         return("SMS successfully sent.", None)
-        
-        

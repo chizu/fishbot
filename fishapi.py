@@ -1,7 +1,11 @@
 #!/usr/bin/python
 """Functions to share with modules isolated from the Fishbot object."""
-import sys, os, time, string
-import urllib, re
+import sys
+import os
+import time
+import string
+import urllib
+import re
 
 from sqlalchemy import Column, Integer, String
 
@@ -35,8 +39,8 @@ def http_grep(url, regexp):
 class Counter(DatabaseObject):
 	"Count things!"
 	__tablename__ = 'counters'
-	name = Column(String, primary_key=True) # name of the counter
-	count = Column(Integer) # the count
+	name = Column(String, primary_key=True)  # name of the counter
+	count = Column(Integer)  # the count
 
 	def __init__(self, name):
 		self.name = name

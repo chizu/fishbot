@@ -62,7 +62,7 @@ class Fishbot(protocols.ThreadManager):
 			# If the request was from a channel, reply to the channel.
 			respond = to
 		else:
-			# If the request was from a private message, 
+			# If the request was from a private message,
 			# reply to the private message.
 			respond = source.split("!")[0]
 		return respond

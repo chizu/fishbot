@@ -89,9 +89,9 @@ def bang(pipein, arguments, event):
 				return ("Karma bottom %s -> %s" %
 						(amount, ", ".join([":".join([str(y) for y in x]) for x in results[:amount]])), None)
 			elif tokens[1] == 'middle':
-				mid_point = int(len(results)/2)
+				mid_point = int(len(results) / 2)
 				return ("Karma middle %s -> %s" %
-						(amount, ", ".join([":".join([str(y) for y in x]) for x in results[mid_point-int(amount/2 + 1):mid_point+int(amount/2 + 1)]])), None)
+						(amount, ", ".join([":".join([str(y) for y in x]) for x in results[mid_point - int(amount / 2 + 1):mid_point + int(amount / 2 + 1)]])), None)
 		return ("Highest score: %s (%s) - Lowest score: %s (%s)" % (results[-1][0], results[-1][1], results[0][0], results[0][1]), None)
 	else:
 		things = sql_session.query(Karma).filter_by(string=token)

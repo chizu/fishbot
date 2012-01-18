@@ -2,11 +2,12 @@
 """Simple SMS/Email interface client."""
 import generic, imaplib, datetime
 import backend
+
 class address(backend.DatabaseObject):
 	   name = ""
 	   address = ""
 	   __namespace__ = ""
-     
+
 class MailEvent(generic.Event):
      """Mail or SMS event."""
      pass
@@ -14,6 +15,7 @@ class MailEvent(generic.Event):
 class Client(generic.Client):
      """SMS/Mail server interface. This is the main class, which will behave like a normal protocol plugin."""
      protocol = "mail"
+
      def __init__(self, emailaddr, hostname, port, username=None, password=None, ssl=False, tick=120):
           self.emailaddr = emailaddr
           self.host = hostname
@@ -29,21 +31,20 @@ class Client(generic.Client):
           self.triggers.register("incoming", self.incoming)
           self.connect()
 
-
      def connect(self):
           if not self.connected:
                if self.ssl:
                     self.mailc = imaplib.IMAP4_SSL(self.host, self.port)
                else:
                     self.mailc = imaplib.IMAP4(self.host, self.port)
-  
+
                if self.mailc.login(self.username, self.password)[0] == 'OK':
                     self.mailc.select()
                     self.connected = True
                else:
                     self.mailc.logout()
                     del(self.mailc)
-		
+
      def disconnect(self):
           if self.connected:
                self.mailc.logout()
@@ -53,7 +54,6 @@ class Client(generic.Client):
      def message(self, to, message, event):
           """This is the send function"""
 
-		
      def incoming(self, event):
           """This will be overriden depending on the type of client"""
 

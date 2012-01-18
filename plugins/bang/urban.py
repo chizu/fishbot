@@ -12,7 +12,6 @@ def bang(pipein, arguments, event):
     else:
         (num, arguments) = match.groups()
 
-
     server = SOAPpy.SOAPProxy("http://api.urbandictionary.com/soap")
     urban = server.lookup("7df8eccad5391dbbb45e81fa77f4c1a8", arguments)
 
@@ -20,4 +19,3 @@ def bang(pipein, arguments, event):
         return (urban[num].definition.replace("\n\n", "\n").split("\n"), None)
 
     return ("Could not find a definition for " + arguments + "\n", None)
-    

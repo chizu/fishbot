@@ -18,7 +18,7 @@ def questions(self, event):
             "Better not tell you now.",
             "Ask again later.",
             "Concentrate and ask again.",
-            "Cannot predict now.", 
+            "Cannot predict now.",
             "My sources say no.",
             "Very doubtful.",
             "My reply is no.",
@@ -34,5 +34,5 @@ def questions(self, event):
             "The sky might be octarine. I would go check."
             ]
         event.server.say(self.respond_to(event.source, event.target), random.choice(responses))
-        
+
 expression = ('.*\?\b*$', questions)
