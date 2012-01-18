@@ -7,5 +7,5 @@ def address(self, event):
 		bang_event = copy.copy(event)
 		bang_event.arguments = re.sub(prefix, "!", bang_event.arguments)
 		bang.bang(self, bang_event)
-	
+
 expression = ("", address)

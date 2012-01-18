@@ -15,9 +15,6 @@ def load():
 	__all__.remove('__init__')
 	__all__ = list(__all__)
 	__all__.sort()
-	
-#	for each in __all__:
-#		module = importer.__import__(name=each, path="protocols")
 
 class TriggerMissing(Exception):
 	"""No trigger registered for a given command."""
@@ -32,7 +29,7 @@ class TriggerManager(object):
 
 	def register(self, command, function, args=()):
 		"""Attach a function to a command."""
-		if self.triggers.has_key(command):
+		if command in self.triggers:
 			self.triggers[command].append((function, args))
 		else:
 			self.triggers[command] = [(function, args),]
@@ -43,14 +40,14 @@ class TriggerManager(object):
 
 	def trigger(self, command, args):
 		"""Execute a command."""
-		if self.triggers.has_key(command):
+		if command in self.triggers:
 			for each in self.triggers[command]:
 				if each[1]:
 					each[0](*each[1])
 				else:
 					each[0](args)
 		else:
-			if self.aliases.has_key(command):
+			if command in self.aliases:
 				self.trigger(self.aliases[command], args)
 			else:
 				if self.parent:
@@ -60,7 +57,7 @@ class TriggerManager(object):
 
 	def unregister(self, command, function, args=()):
 		"""Remove a function from a command."""
-		if self.triggers.has_key(command):
+		if command in self.triggers:
 			self.triggers[command].remove((function, args))
 
 class ClientThread(threading.Thread):
@@ -71,11 +68,12 @@ class ClientThread(threading.Thread):
 
 	def run(self):
 		"""Poll the server forever, until it disconnects."""
-		for each in self.server.poll(): pass
-		
+		for each in self.server.poll():
+			pass
+
 class ThreadManager(object):
 	"""Threaded protocol multiplexing."""
-	def __init__(self, servers = {}):
+	def __init__(self, servers={}):
 		self.servers = servers
 		self.threads = {}
 

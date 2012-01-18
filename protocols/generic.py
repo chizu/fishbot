@@ -13,12 +13,14 @@ from backend import DatabaseObject
 def Property(function):
 	keys = 'fget', 'fset', 'fdel'
 	func_locals = {'doc':function.__doc__}
+
 	def probeFunc(frame, event, arg):
 		if event == 'return':
 			locals = frame.f_locals
 			func_locals.update(dict((k,locals.get(k)) for k in keys))
 			sys.settrace(None)
 		return probeFunc
+
 	sys.settrace(probeFunc)
 	function()
 	return property(**func_locals)
@@ -56,7 +58,7 @@ class Client(object):
 	When creating a new protocol interface, you should inherit from this and overload any functionality required."""
 	triggers = protocols.TriggerManager()
 	protocol = "generic"
-	
+
 	def __init__(self, nick, hostname, port, realname=None, password=None, ssl=False):
 		self.nick = nick
 
@@ -107,6 +109,7 @@ class Client(object):
 		nick is the identifier string for the bot to use."""
 		def fget(self):
 			return self._nick
+
 		def fset(self, nick):
 			self._nick = nick
 

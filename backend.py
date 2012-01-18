@@ -1,5 +1,8 @@
 #!/usr/bin/python
-import sys, os, time, string
+import sys
+import os
+import time
+import string
 
 from sqlalchemy import create_engine, or_
 from sqlalchemy.ext.declarative import declarative_base
@@ -14,10 +17,12 @@ engine = create_engine('postgresql:///fishbot')
 DatabaseObject = declarative_base()
 Session = sessionmaker(bind=engine)
 
+
 def get_session():
     # Naively return a database session
     DatabaseObject.metadata.create_all(engine)
     return Session()
+
 
 def add_event(event):
     """Accepts an IRCEvent, and adds it to the events table."""
@@ -26,6 +31,7 @@ def add_event(event):
     sql_session.add(event)
     sql_session.commit()
     backend_lock.release()
+
 
 def last(Event, resource, count=1):
     """Return the last 'count' of things said by a nick or channel."""

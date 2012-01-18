@@ -10,17 +10,19 @@ import imp
 # Set this to True to see what kind of import operations are actually done
 debug = False
 
-def __import__(name, glob = globals(), loc = locals(), path=""):
+def __import__(name, glob=globals(), loc=locals(), path=""):
     """Runtime reloading importer.
 
     Import a module multiple times, when code has changed on disk between each import, updating the code getting executed."""
-    if debug: print "###IMPORTER###"
+    if debug:
+        print "###IMPORTER###"
     leaf = name
     if path:
         name = path + "." + name
-    if sys.modules.has_key(name):
+    if name in sys.modules:
         if hasattr(sys.modules[name],'__file__'):
-            if debug: print "###LOADING:" + sys.modules[name].__file__
+            if debug:
+                print "###LOADING:" + sys.modules[name].__file__
             module_path = sys.modules[name].__file__
             if module_path[-13:] == '/__init__.pyc':
                 module_path = module_path[0:-13]
@@ -30,17 +32,21 @@ def __import__(name, glob = globals(), loc = locals(), path=""):
                 if (os.path.isdir(module_path) and os.stat(module_path).st_mtime > os.stat(module_path + "/__init__.pyc").st_mtime) or not os.path.isdir(module_path) and os.stat(module_path).st_mtime > os.stat(module_path + 'c').st_mtime:
                     # The module has been modified, reimport it
                     del(sys.modules[name])
-                    if debug: print "###REIMPORTED###"
+                    if debug:
+                        print "###REIMPORTED###"
                     return __builtin__.__import__(name, fromlist=path)
             else:
                 # The module no longer exists, remove it
                 del(sys.modules[name])
-                if debug: print "###REMOVED###"
+                if debug:
+                    print "###REMOVED###"
                 return None
         # Do not reimport, simply return the unmodified module
-        if debug: print "###RETURNED###"
+        if debug:
+            print "###RETURNED###"
         return sys.modules[name]
     else:
         # Initial import
-        if debug: print "###INITIALLY IMPORTED###"
+        if debug:
+            print "###INITIALLY IMPORTED###"
         return __builtin__.__import__(name, fromlist=path)

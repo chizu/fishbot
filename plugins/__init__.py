@@ -34,7 +34,7 @@ __all__.sort()
 for each in __all__:
     module = importer.__import__(name=each, path="plugins")
     expression = module.expression[0]
-    if expressions.has_key(expression):
+    if expression in expressions:
         expressions[expression].append(module.expression[1])
     else:
         expressions[expression] = [module.expression[1]]

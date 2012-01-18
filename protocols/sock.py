@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 import socket
 import protocols.generic
-socket.setdefaulttimeout(1200.0) # Socket timeout
+
+socket.setdefaulttimeout(1200.0)  # Socket timeout
 
 class SocketEvent(protocols.generic.Event):
 	pass
@@ -9,6 +10,7 @@ class SocketEvent(protocols.generic.Event):
 class Client(protocols.generic.Client):
 	"""Simple socket protocol, base class for socket based protocols."""
 	triggers = protocols.TriggerManager(protocols.generic.Client.triggers)
+
 	def __init__(self, hostname, port, ssl=False):
 		self.hostname = hostname
 		self.port = port
@@ -43,7 +45,7 @@ class Client(protocols.generic.Client):
 	def poll(self):
 		"""Generator for polling server events. This will be called as often as it yields, and will exit upon returning."""
 		return
-	
+
 	def reconnect(self):
 		"""Called to reconnect in case of failure or reloading."""
 		self.disconnect()
@@ -68,9 +70,9 @@ class Client(protocols.generic.Client):
 			else:
 				length = self.sock.send(string)
 		except socket.error, v:
-			if v[0] == 32: # Broken pipe
+			if v[0] == 32:  # Broken pipe
 				Client.reconnect(self)
-			else: # Unknown socket error
+			else:  # Unknown socket error
 				Client.disconnect(self)
 				raise
 		if length == len(string):

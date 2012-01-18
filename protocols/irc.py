@@ -6,23 +6,26 @@ def Property(function):
 	import sys
 	keys = 'fget', 'fset', 'fdel'
 	func_locals = {'doc':function.__doc__}
+
 	def probeFunc(frame, event, arg):
 		if event == 'return':
 			locals = frame.f_locals
 			func_locals.update(dict((k,locals.get(k)) for k in keys))
 			sys.settrace(None)
 		return probeFunc
+
 	sys.settrace(probeFunc)
 	function()
 	return property(**func_locals)
 
 class IRCEvent(protocols.sock.SocketEvent):
 	pass
-		
+
 class Client(protocols.sock.Client):
 	"""IRC server client interface."""
 	triggers = protocols.TriggerManager(protocols.sock.Client.triggers)
 	protocol = "IRC"
+
 	def __init__(self, nick, realname, hostname, port, ssl=False):
 		self._nick = nick
 		self.realname = realname
@@ -45,7 +48,7 @@ class Client(protocols.sock.Client):
 
 	def connect(self):
 		"""Connect to IRC, mention nick name """
-		super(Client, self).connect() # Do the socket connection
+		super(Client, self).connect()  # Do the socket connection
 		self.nick = self._nick
 		self.send("USER " + self.nick + " 0 * :" + self.realname)
 
@@ -62,7 +65,7 @@ class Client(protocols.sock.Client):
 		"""Multiline wrapper for actions."""
 		for each in string.splitlines():
 			self.action(to, each)
-		
+
 	def join(self, channel, key=None, rejoin=False):
 		if key:
 			self.send("JOIN " + channel + " " + key)
@@ -79,6 +82,7 @@ class Client(protocols.sock.Client):
 		"""Set the nickname."""
 		def fget(self):
 			return self._nick
+
 		def fset(self, nick):
 			self.send("NICK " + nick)
 			self._nick = nick
