@@ -6,7 +6,7 @@ This Fishbot plugin in turn implements it's own plugin system. These are simple,
 These plugins are just a normal python module. Any python code can go in these plugins. Suppose you have a file named 'hello.py'. A simple example would be:
 
 def bang(pipein, arguments, event):
-	return ("Hello world.", None)
+    return ("Hello world.", None)
 
 This would cause Fishbot to say "Hello world." when it saw !hello on a channel.
 
@@ -22,61 +22,61 @@ from glob import glob
 submodules = glob("plugins/bang/*")
 __all__ = set()
 for each in submodules:
-	each = each.split('/')[-1].split('.')[0]
-	__all__.add(each)
+    each = each.split('/')[-1].split('.')[0]
+    __all__.add(each)
 __all__.remove('__init__')
 
 def bang(self, event):
-	import re
-	import importer
-	pipes = [string.strip(i) for i in event.arguments.split('|')]
-	pipein = ""
-	for pipe in pipes:
-		if pipe:
-			postpipe = re.search(expression[0], pipe)
-			if not postpipe:
-				# invalid bang command syntax
-				print "bang: invalid syntax - '" + pipe + "'"
-				return
-			name = postpipe.group(1)
-			arguments = string.strip(postpipe.group(2))
-			try:
-				module = importer.__import__(name, globals(), locals(), 'plugins.bang')
-				if hasattr(module, 'bang'):
-					# New API
-					respond = self.respond_to(event.source, event.target)
-					(pubmsg, action) = module.bang(pipein, arguments, event)
-					if pubmsg and pipe is pipes[-1]:
-						if isinstance(pubmsg, (list, tuple)):
-							lines = list()
-							for line in pubmsg:
-								lines += line.split('\n')
-						else:
-							lines = pubmsg.split('\n')
-						if len(lines) > 13:
-							# Private message
-							respond = fishapi.getnick(event.source)
-						for each in lines:
-							if each != '':
-								event.server.message(respond, each)
-					elif pubmsg:
-						if isinstance(pubmsg, (list, tuple)):
-							pipein = string.join(pubmsg, '\n')
-						else:
-							pipein = pubmsg
-					if action:
-						if isinstance(action, (list, tuple)):
-							for each in action:
-								event.server.action(respond, each)
-						else:
-							event.server.action(respond, action)
+    import re
+    import importer
+    pipes = [string.strip(i) for i in event.arguments.split('|')]
+    pipein = ""
+    for pipe in pipes:
+        if pipe:
+            postpipe = re.search(expression[0], pipe)
+            if not postpipe:
+                # invalid bang command syntax
+                print "bang: invalid syntax - '" + pipe + "'"
+                return
+            name = postpipe.group(1)
+            arguments = string.strip(postpipe.group(2))
+            try:
+                module = importer.__import__(name, globals(), locals(), 'plugins.bang')
+                if hasattr(module, 'bang'):
+                    # New API
+                    respond = self.respond_to(event.source, event.target)
+                    (pubmsg, action) = module.bang(pipein, arguments, event)
+                    if pubmsg and pipe is pipes[-1]:
+                        if isinstance(pubmsg, (list, tuple)):
+                            lines = list()
+                            for line in pubmsg:
+                                lines += line.split('\n')
+                        else:
+                            lines = pubmsg.split('\n')
+                        if len(lines) > 13:
+                            # Private message
+                            respond = fishapi.getnick(event.source)
+                        for each in lines:
+                            if each != '':
+                                event.server.message(respond, each)
+                    elif pubmsg:
+                        if isinstance(pubmsg, (list, tuple)):
+                            pipein = string.join(pubmsg, '\n')
+                        else:
+                            pipein = pubmsg
+                    if action:
+                        if isinstance(action, (list, tuple)):
+                            for each in action:
+                                event.server.action(respond, each)
+                        else:
+                            event.server.action(respond, action)
 
-				elif hasattr(module, 'handle_say'):
-					# Old API
-					module.handle_say(self, event.source, event.target, event.arguments)
-			except ImportError:
-				return
-			except:
-				raise
+                elif hasattr(module, 'handle_say'):
+                    # Old API
+                    module.handle_say(self, event.source, event.target, event.arguments)
+            except ImportError:
+                return
+            except:
+                raise
 
 expression = ("^\!(\w+)(.*)$", bang)

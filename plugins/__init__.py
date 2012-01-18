@@ -40,10 +40,10 @@ for each in __all__:
         expressions[expression] = [module.expression[1]]
 
 class PluginThread(threading.Thread):
-	def __init__(self, func, args):
-		self.func = func
-		self.args = args
-		super(PluginThread, self).__init__()
+    def __init__(self, func, args):
+        self.func = func
+        self.args = args
+        super(PluginThread, self).__init__()
 
-	def run(self):
-		self.func(*self.args)
+    def run(self):
+        self.func(*self.args)
