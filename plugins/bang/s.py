@@ -23,9 +23,9 @@ def bang(pipein, arguments, event):
             lines_returned = 1
         # Search globally, or just the user executing the command
         if 'm' in options or 'M' in options or 'g' in options or 'G' in options:
-            search_domain = fishapi.backend.last(type(event), event.target, lines)[1:]
+            search_domain = fishapi.backend.last(type(event), target=event.target, count=lines)[1:]
         else:
-            search_domain = fishapi.backend.last(type(event), event.source, lines)[1:]
+            search_domain = fishapi.backend.last(type(event), source=event.source, target=event.target, count=lines)[1:]
         for past_event in search_domain:
             past_event.arguments = past_event.arguments.replace('\001ACTION', fishapi.getnick(past_event.source))
             past_event.arguments = past_event.arguments.replace('\001', '')

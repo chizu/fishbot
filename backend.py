@@ -27,9 +27,16 @@ def add_event(event):
     sql_session.commit()
 
 
-def last(Event, resource, count=1):
-    """Return the last 'count' of things said by a nick or channel."""
+def last(Event, source=None, target=None, count=1):
+    """Return the last 'count' of things said by a nick (source) or 
+    channel (target)."""
     sql_session = get_session()
-    return sql_session.query(Event).\
-        filter(or_(Event.source == resource, Event.target == resource)).\
-        order_by(Event.timestamp.desc())[:count]
+    query = sql_session.query(Event)
+    if target:
+        filtered = query.filter(Event.target == target)
+    elif target and source:
+        filtered = query.filter(and_(Event.source == source,
+                                     Event.target == target))
+    elif source:
+        filtered = query.filter(Event.source == source)
+    return filtered.order_by(Event.timestamp.desc())[:count]

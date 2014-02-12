@@ -8,7 +8,8 @@ def bang(pipein, arguments, event):
     if pipein or arguments:
         spelling = [pipein or arguments]
     else:
-        result = backend.last(type(event), event.source, 2)
+        result = backend.last(type(event), source=event.source,
+                              target=event.target, count=2)
         spelling = [result[1].arguments]
     reply = []
     for spell in spelling:
