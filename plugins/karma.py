@@ -24,7 +24,7 @@ class Karma(DatabaseObject):
 
 def karma(self, event):
     sql_session = get_session()
-    before, string, operator = re.search(expression[0], event.arguments).groups()
+    before, string, operator = re.search(expression[0], event.arguments, re.UNICODE).groups()
     string = string.strip().lower()
     nick = getnick(event.source)
     # Find this string or add the row
@@ -48,4 +48,4 @@ def karma(self, event):
         print "karma.py: Something odd has happened."
     sql_session.commit()
 
-expression = ("(^.*[^\w' +-]|^)(.*?)([+]{2,6}|[-]{2,6})", karma)
+expression = ("(^.*[;:,.!?]|^)(.*?)([+]{2,6}|[-]{2,6})", karma)
