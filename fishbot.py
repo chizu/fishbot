@@ -58,7 +58,7 @@ class Fishbot(protocols.ThreadManager):
     def respond_to(self, source, to):
         """Reply to the correct place based on the source and destination"""
         # Target to reply to
-        if to[0] is "#":
+        if to[0] == "#":
             # If the request was from a channel, reply to the channel.
             respond = to
         else:
