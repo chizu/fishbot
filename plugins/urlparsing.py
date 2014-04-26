@@ -12,6 +12,13 @@
 
 import re, fishapi
 
+try:
+    import html.parser
+    html_parser = html.parser.HTMLParser()
+except ImportError:
+    import HTMLParser
+    html_parser = HTMLParser.HTMLParser()
+
 pattern = r"""
 ( ( \w | - | % )+ @   #    email address prefix (e.g. "glyn@")
 | \w+ ://             #    or protocol prefix (e.g. "http://")
@@ -74,7 +81,7 @@ def urlmatcher(self, event):
         for each in resource.readlines():
             if re.compile("\<title.*\>(.*)\<\/title\>",re.I).search(each):
                 match = re.search("\<title.*\>(.*)\<\/title\>",each,re.I)
-                output += "Title: " + match.group(1)
+                output += "Title: " + html_parser.unescape(match.group(1))
 
         if output:
             event.server.say(respond, output)
